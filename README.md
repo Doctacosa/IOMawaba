@@ -1,2 +1,3 @@
 # IOMawaba
-Manage warnings and bans for players on a Minecraft server
+
+**Mawaba**: **Ma**nage **wa**rnings and **ba**ns for players on a Minecraft server.
