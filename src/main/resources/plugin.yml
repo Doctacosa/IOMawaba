@@ -1,0 +1,12 @@
+name: IOMawaba
+main: com.interordi.iomawaba.IOMawaba
+version: 1.0
+api-version: 1.13
+
+commands:
+  warning:
+    description: Warn a user about the rules
+    usage: /warning user message
+  w:
+    description: Warn a user about the rules
+    usage: /w user message
