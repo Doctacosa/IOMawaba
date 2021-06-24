@@ -1,10 +1,6 @@
 package com.interordi.iomawaba;
 
-//import java.io.ByteArrayOutputStream;
-//import java.io.DataOutputStream;
-//import java.io.IOException;
 import java.util.Arrays;
-//import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,10 +13,13 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
+import com.interordi.iomawaba.utilities.Database;
 
 public class IOMawaba extends JavaPlugin {
 
 	public static IOMawaba instance;
+	
+	public static Database db = null;
 
 	
 	public void onEnable() {
