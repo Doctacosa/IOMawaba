@@ -8,9 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
+import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
 import com.interordi.iomawaba.utilities.Database;
@@ -62,7 +61,7 @@ public class IOMawaba extends JavaPlugin {
 		
 		if (cmd.getName().equalsIgnoreCase("warning") || cmd.getName().equalsIgnoreCase("w")) {
 			
-			if (!sender.hasPermission("iocommands.warning")) {
+			if (!sender.hasPermission("iomawaba.warning")) {
 				sender.sendMessage(ChatColor.RED + "You are not allowed to use this command.");
 				return true;
 			}
@@ -82,22 +81,13 @@ public class IOMawaba extends JavaPlugin {
 				sender.sendMessage(ChatColor.RED + "Target not found: " + playerName);
 				return true;
 			}
-			
+
 			String message = "";
-			if (args.length > 1) {
+			if (args.length > 1)
 				message += strJoin(Arrays.copyOfRange(args, 1, args.length), " ");
-			} else
-				message += "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
+	
 
-			target.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + message);
-			target.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "WARNING", ChatColor.GOLD + playerName + ", see the chat now.", 10, 100, 10);
-			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30 * 20, 2), false);
-			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 30 * 20, 2), false);
-
-			sender.sendMessage(ChatColor.GREEN + "Warning sent to " + playerName + ".");
-
-			//Notify staff
-			Bukkit.getServer().getLogger().info("|IOSTAFF|" + playerName + " was warned: " + message);
+			Warnings.giveWarning(sender, target, message);
 
 			return true;
 		}
