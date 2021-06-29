@@ -18,7 +18,9 @@ public class IOMawaba extends JavaPlugin {
 
 	public static IOMawaba instance;
 	
-	public static Database db = null;
+	public Database db = null;
+
+	public Warnings warnings;
 
 	
 	public void onEnable() {
@@ -35,6 +37,8 @@ public class IOMawaba extends JavaPlugin {
 
 		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
 		
+		warnings = new Warnings(this);
+
 		getLogger().info("IOMawaba enabled");
 	}
 	
@@ -98,7 +102,7 @@ public class IOMawaba extends JavaPlugin {
 				message += strJoin(Arrays.copyOfRange(args, 1, args.length), " ");
 	
 
-			Warnings.giveWarning(sender, target, message);
+			warnings.giveWarning(sender, target, message);
 
 			return true;
 		}

@@ -1,5 +1,7 @@
 package com.interordi.iomawaba.modules;
 
+import com.interordi.iomawaba.IOMawaba;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,10 +11,17 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Warnings {
 
-	private static String defaultMessage = "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
+	private String defaultMessage = "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
+
+	private IOMawaba plugin;
 
 
-	public static void giveWarning(CommandSender sender, Player target, String message) {
+	public Warnings(IOMawaba plugin) {
+		this.plugin = plugin;
+	}
+
+
+	public void giveWarning(CommandSender sender, Player target, String message) {
 
 		if (message == null || message.length() == 0)
 			message = defaultMessage;
@@ -26,6 +35,9 @@ public class Warnings {
 
 		//Notify staff
 		Bukkit.getServer().getLogger().info("|IOSTAFF|" + target.getDisplayName() + " was warned: " + message);
+
+		//Log
+		plugin.db.logWarning(target.getUniqueId(), message);
 	}
 	
 }
