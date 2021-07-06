@@ -22,7 +22,7 @@ public class Database {
 	}
 	
 	
-	//Get all active perks of a player
+	//Get the active warnings on a player
 	public Map< Instant, String > getWarnings(UUID player) {
 		
 		Connection conn = null;
@@ -30,6 +30,9 @@ public class Database {
 		ResultSet rs = null;
 		String query = "";
 		Map< Instant, String > warnings = new HashMap< Instant, String >();
+
+		LocalDate date = LocalDate.now();
+		date = date.minusDays(180);
 		
 		try {
 			conn = DriverManager.getConnection(database);
@@ -37,10 +40,12 @@ public class Database {
 			pstmt = conn.prepareStatement("" +
 				"SELECT message, date " + 
 				"FROM players__warnings " +
-				"WHERE player = ? "
+				"WHERE player = ? " +
+				"  AND `date` >= ?"
 			);
 			
 			pstmt.setString(1, player.toString());
+			pstmt.setString(2, date.toString());
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
