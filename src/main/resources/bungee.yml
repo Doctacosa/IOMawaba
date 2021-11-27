@@ -1,7 +1,6 @@
 name: IOMawaba
-main: com.interordi.iomawaba.IOMawabaSpigot
+main: com.interordi.iomawaba.IOMawabaBungee
 version: 1.0
-api-version: 1.13
 
 commands:
   warning:

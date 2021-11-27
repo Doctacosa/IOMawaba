@@ -14,9 +14,9 @@ import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
 import com.interordi.iomawaba.utilities.Database;
 
-public class IOMawaba extends JavaPlugin {
+public class IOMawabaSpigot extends JavaPlugin {
 
-	public static IOMawaba instance;
+	public static IOMawabaSpigot instance;
 	
 	public Database db = null;
 
@@ -37,7 +37,7 @@ public class IOMawaba extends JavaPlugin {
 
 		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
 		
-		warnings = new Warnings(this);
+		warnings = new Warnings(this, db);
 
 		getLogger().info("IOMawaba enabled");
 	}

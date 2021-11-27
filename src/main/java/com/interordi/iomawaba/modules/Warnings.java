@@ -1,6 +1,7 @@
 package com.interordi.iomawaba.modules;
 
-import com.interordi.iomawaba.IOMawaba;
+import com.interordi.iomawaba.IOMawabaSpigot;
+import com.interordi.iomawaba.utilities.Database;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,11 +14,13 @@ public class Warnings {
 
 	private String defaultMessage = "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
 
-	private IOMawaba plugin;
+	private IOMawabaSpigot plugin;
+	private Database db;
 
 
-	public Warnings(IOMawaba plugin) {
+	public Warnings(IOMawabaSpigot plugin, Database db) {
 		this.plugin = plugin;
+		this.db = db;
 	}
 
 
