@@ -17,6 +17,7 @@ public class IOMawabaBungee extends Plugin {
 	public void onEnable() {
 		instance = this;
 
+		getLogger().info("IOMawaba enabled");
 	}
 	
 	
