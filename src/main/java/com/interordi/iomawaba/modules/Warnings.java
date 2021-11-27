@@ -52,12 +52,11 @@ public class Warnings {
 		String title = ChatColor.RED + "" + ChatColor.BOLD + "WARNING";
 		String subtitle = ChatColor.GOLD + target.getDisplayName() + ", see the chat now.";
 		boolean kick = false;
+		int ban = 0;
 
 		if (nbWarnings >= 3) {
 			//Ban for 30d
-			//TODO: Send message to IOChatServer
-			//TODO: Add a method to IOChatServer to actually receive commands
-			//TODO: Switch to internal ban method eventually
+			ban = 30;
 
 		} else if (nbWarnings == 2) {
 			//Stop then kick on delay, final warning
@@ -96,12 +95,28 @@ public class Warnings {
 		Bukkit.getServer().getLogger().info("|IOSTAFF|" + target.getDisplayName() + " was warned (" + (nbWarnings + 1) + "): " + message);
 
 		//Kick on delay if requested
-		Bukkit.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				target.kickPlayer("Official warning - review the rules now.");
-			}
-		}, 10 * 20L);
+		if (kick) {
+			Bukkit.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+				@Override
+				public void run() {
+					target.kickPlayer("Official warning - review the rules now.");
+				}
+			}, 10 * 20L);
+		}
+
+		//Ban if requested
+		if (ban > 0) {
+			target.kickPlayer("You have been banned for " + ban + " days: " + message);
+			Bukkit.getServer().getLogger().info("|IOBAN|" + target.getDisplayName() + " was banned (" + ban + "): " + message);
+			final int finalBan = ban;
+
+			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+				@Override
+				public void run() {
+					plugin.db.banPlayer(target.getUniqueId(), sender.getName(), finalBan, message);
+				}
+			});
+		}
 
 		//Log
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
