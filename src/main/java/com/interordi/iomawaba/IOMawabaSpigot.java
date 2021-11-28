@@ -1,7 +1,5 @@
 package com.interordi.iomawaba;
 
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +11,7 @@ import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
 import com.interordi.iomawaba.utilities.Database;
+import com.interordi.iomawaba.utilities.StringUtils;
 
 public class IOMawabaSpigot extends JavaPlugin {
 
@@ -99,7 +98,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 
 			String message = "";
 			if (args.length > 1)
-				message += strJoin(Arrays.copyOfRange(args, 1, args.length), " ");
+				message += StringUtils.strJoin(args, " ", 1);
 	
 
 			warnings.giveWarning(sender, target, message);
@@ -108,25 +107,5 @@ public class IOMawabaSpigot extends JavaPlugin {
 		}
 		
 		return false;
-	}
-
-
-
-	public static String strJoin(String[] aArr, String sSep) {
-		return strJoin(aArr, sSep, 0);
-	}
-	
-	
-	public static String strJoin(String[] aArr, String sSep, int startPos) {
-		if (aArr.length <= startPos)
-			return "";
-		
-		StringBuilder sbStr = new StringBuilder();
-		for (int i = startPos, il = aArr.length; i < il; i++) {
-			if (i > startPos)
-				sbStr.append(sSep);
-			sbStr.append(aArr[i]);
-		}
-		return sbStr.toString();
 	}
 }
