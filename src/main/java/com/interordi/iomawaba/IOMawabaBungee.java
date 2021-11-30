@@ -60,7 +60,13 @@ public class IOMawabaBungee extends Plugin {
 		String dbBase = configuration.getString("database.base");
 
 		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
-
+		if (!db.init()) {
+			getLogger().severe("---------------------------------");
+			getLogger().severe("Failed to initialize the database");
+			getLogger().severe("Make sure to configure config.yml");
+			getLogger().severe("---------------------------------");
+			return;
+		}
 
 		PlayerActions pa = new PlayerActionsBungee();
 

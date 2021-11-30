@@ -23,6 +23,54 @@ public class Database {
 	}
 	
 	
+	//Initialize the database
+	public boolean init() {
+
+		//Create or update the required database table
+		//A failure indicates that the database wasn't configured properly
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String query = "";
+		
+		try {
+			conn = DriverManager.getConnection(database);
+			
+			pstmt = conn.prepareStatement("" +
+				"CREATE TABLE IF NOT EXISTS `io__bans` ( " +
+				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
+				"  `uuid` varchar(36) NOT NULL, " +
+				"  `ip` varchar(50) DEFAULT NULL, " +
+				"  `by_uuid` varchar(36) NOT NULL, " +
+				"  `by_name` varchar(30) NOT NULL, " +
+				"  `reason` varchar(100) DEFAULT NULL, " +
+				"  `server` varchar(30) NOT NULL, " +
+				"  `begin` timestamp NOT NULL DEFAULT current_timestamp(), " +
+				"  `end` timestamp NULL DEFAULT NULL, " +
+				"  `active` tinyint(1) NOT NULL DEFAULT 1, " +
+				"  `unban_date` timestamp NULL DEFAULT NULL, " +
+				"  `unban_by_uuid` varchar(36) DEFAULT NULL, " +
+				"  `unban_by_name` varchar(30) DEFAULT NULL, " +
+				"  `unban_reason` varchar(200) DEFAULT NULL, " +
+				"  PRIMARY KEY (`id`), " +
+				"  KEY `uuid` (`uuid`), " +
+				"  KEY `ip` (`ip`) " +
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8; "
+			);
+
+			pstmt.executeUpdate();
+			
+		} catch (SQLException ex) {
+			System.err.println("Query: " + query);
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("VendorError: " + ex.getErrorCode());
+			return false;
+		}
+
+		return true;
+	}
+	
+	
 	//Get the active warnings on a player
 	public Map< Instant, String > getWarnings(UUID player) {
 		

@@ -35,6 +35,13 @@ public class IOMawabaSpigot extends JavaPlugin {
 		String dbBase = this.getConfig().getString("database.base");
 
 		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
+		if (!db.init()) {
+			getLogger().severe("---------------------------------");
+			getLogger().severe("Failed to initialize the database");
+			getLogger().severe("Make sure to configure config.yml");
+			getLogger().severe("---------------------------------");
+			return;
+		}
 		
 		warnings = new Warnings(this, db);
 
