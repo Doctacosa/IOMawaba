@@ -69,6 +69,34 @@ public class Database {
 
 		return true;
 	}
+
+
+	public void addFromBat() {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String query = "";
+		
+		try {
+			conn = DriverManager.getConnection(database);
+			
+			pstmt = conn.prepareStatement("" +
+				"INSERT INTO `io__bans` (id, uuid, ip, by_name, reason, server, begin, end, active, unban_date, unban_by_name, unban_reason) " +
+				"( " +
+				"	SELECT ban_id, CONCAT(SUBSTRING(UUID, 1, 8), '-', SUBSTRING(UUID, 9, 4), '-', SUBSTRING(UUID, 13, 4), '-', SUBSTRING(UUID, 17, 4), '-', SUBSTRING(UUID, 21, 12)) AS uuid, ban_ip, ban_staff, ban_reason, ban_server, ban_begin, ban_end, ban_state, ban_unbandate, ban_unbanstaff, ban_unbanreason " +
+				"	FROM BAT_ban " +
+				")"
+			);
+
+			pstmt.executeUpdate();
+			
+		} catch (SQLException ex) {
+			System.err.println("Query: " + query);
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("VendorError: " + ex.getErrorCode());
+		}
+	}
 	
 	
 	//Get the active warnings on a player
