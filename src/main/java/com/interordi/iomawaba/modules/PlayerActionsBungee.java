@@ -10,7 +10,7 @@ public class PlayerActionsBungee implements PlayerActions {
 
 	@Override
 	public boolean warnPlayer(String player, String message) {
-		// TODO Auto-generated method stub
+		ProxyServer.getInstance().getLogger().warning("The warnings aren't defined at the proxy level.");
 		return false;
 	}
 

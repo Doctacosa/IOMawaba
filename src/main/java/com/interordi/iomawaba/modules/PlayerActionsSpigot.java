@@ -6,8 +6,9 @@ public class PlayerActionsSpigot implements PlayerActions {
 
 	@Override
 	public boolean warnPlayer(String player, String message) {
-		// TODO Auto-generated method stub
-		return false;
+		//NOTE: Called directly for now, only available at the server level
+		//Warnings.giveWarning(player, message);
+		return true;
 	}
 
 
