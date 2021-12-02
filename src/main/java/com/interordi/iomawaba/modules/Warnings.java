@@ -7,6 +7,7 @@ import com.interordi.iomawaba.utilities.Database;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,7 +26,7 @@ public class Warnings {
 	}
 
 
-	public void giveWarning(Player target, UUID senderUuid, String senderName, String message) {
+	public void giveWarning(Player target, CommandSender sender, String message) {
 
 		if (message == null || message.length() == 0)
 			message = defaultMessage;
@@ -41,7 +42,7 @@ public class Warnings {
 				Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
 					@Override
 					public void run() {
-						actOnWarning(target, senderUuid, senderName, finalMessage, nbWarnings);
+						actOnWarning(target, sender, finalMessage, nbWarnings);
 					}
 				});
 			}
@@ -51,7 +52,7 @@ public class Warnings {
 
 	//Act based on the number of warnings received
 	//nbWarnings represent the number of warnings already received
-	public void actOnWarning(Player target, UUID senderUuid, String senderName, final String message, int nbWarnings) {
+	public void actOnWarning(Player target, CommandSender sender, final String message, int nbWarnings) {
 
 		String title = ChatColor.RED + "" + ChatColor.BOLD + "WARNING";
 		String subtitle = ChatColor.GOLD + target.getDisplayName() + ", see the chat now.";
@@ -93,7 +94,7 @@ public class Warnings {
 		target.sendTitle(title, subtitle, 10, 100, 10);
 
 		//Notify the sender
-		//sender.sendMessage(ChatColor.GREEN + "Warning sent to " + target.getDisplayName() + ".");
+		sender.sendMessage(ChatColor.GREEN + "Warning sent to " + target.getDisplayName() + ".");
 
 		//Notify staff
 		Bukkit.getServer().getLogger().info("|IOSTAFF|" + target.getDisplayName() + " was warned (" + (nbWarnings + 1) + "): " + message);
@@ -117,7 +118,7 @@ public class Warnings {
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {
-					plugin.db.banPlayer(target.getUniqueId(), senderName, finalBan, message);
+					plugin.db.banPlayer(target.getUniqueId(), sender.getName(), finalBan, message);
 				}
 			});
 		}
@@ -126,7 +127,13 @@ public class Warnings {
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			@Override
 			public void run() {
-				plugin.db.logWarning(target.getUniqueId(), message, senderUuid, senderName);
+				UUID senderUuid = null;
+				if (sender instanceof Player) {
+					Player pSender = (Player) sender;
+					senderUuid = pSender.getUniqueId();
+				}
+	
+				plugin.db.logWarning(target.getUniqueId(), message, senderUuid, sender.getName());
 			}
 		});
 

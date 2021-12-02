@@ -109,13 +109,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 			if (args.length > 1)
 				message += StringUtils.strJoin(args, " ", 1);
 	
-			UUID senderUuid = null;
-			if (sender instanceof Player) {
-				Player pSender = (Player) sender;
-				senderUuid = pSender.getUniqueId();
-			}
-
-			warnings.giveWarning(target, senderUuid, sender.getName(), message);
+			warnings.giveWarning(target, sender, message);
 
 			return true;
 		}
