@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.UUID;
+
 import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
@@ -107,8 +109,13 @@ public class IOMawabaSpigot extends JavaPlugin {
 			if (args.length > 1)
 				message += StringUtils.strJoin(args, " ", 1);
 	
+			UUID senderUuid = null;
+			if (sender instanceof Player) {
+				Player pSender = (Player) sender;
+				senderUuid = pSender.getUniqueId();
+			}
 
-			warnings.giveWarning(sender, target, message);
+			warnings.giveWarning(target, senderUuid, sender.getName(), message);
 
 			return true;
 		}
