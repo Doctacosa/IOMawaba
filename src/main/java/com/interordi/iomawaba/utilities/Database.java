@@ -56,7 +56,20 @@ public class Database {
 				"  KEY `ip` (`ip`) " +
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8; "
 			);
-
+			pstmt.executeUpdate();
+			
+			pstmt = conn.prepareStatement("" +
+				"CREATE TABLE IF NOT EXISTS `io__warnings` ( " +
+				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
+				"  `uuid` varchar(36) NOT NULL, " +
+				"  `message` varchar(100) DEFAULT NULL, " +
+				"  `by_uuid` varchar(36) NOT NULL, " +
+				"  `by_name` varchar(30) NOT NULL, " +
+				"  `date` datetime NOT NULL DEFAULT current_timestamp(), " +
+				"  PRIMARY KEY (`id`), " +
+				"  KEY `uuid` (`uuid`) " +
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8; "
+			);
 			pstmt.executeUpdate();
 			
 		} catch (SQLException ex) {
@@ -116,7 +129,7 @@ public class Database {
 			
 			pstmt = conn.prepareStatement("" +
 				"SELECT message, date " + 
-				"FROM players__warnings " +
+				"FROM io__warnings " +
 				"WHERE player = ? " +
 				"  AND `date` >= ?"
 			);
@@ -143,7 +156,7 @@ public class Database {
 	
 	
 	//Log a new warning
-	public boolean logWarning(UUID uuid, String message) {
+	public boolean logWarning(UUID uuid, String message, UUID byUuid, String byName) {
 		Connection conn = null;
 		String query = "";
 		
@@ -154,12 +167,14 @@ public class Database {
 			
 			//Record today's visit
 			query = "" +
-				"INSERT INTO players__warnings (uuid, message, date) " +
-				"VALUES (?, ?, ?) ";
+				"INSERT INTO io__warnings (uuid, message, by_uuid, by_name, date) " +
+				"VALUES (?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, uuid.toString());
 			pstmt.setString(2, message);
-			pstmt.setString(3, date.toString());
+			pstmt.setString(3, byUuid.toString());
+			pstmt.setString(4, byName);
+			pstmt.setString(5, date.toString());
 			pstmt.executeUpdate();
 
 		} catch (SQLException ex) {
