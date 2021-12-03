@@ -18,11 +18,14 @@ public class PlayerActionsBungee implements PlayerActions {
 	@Override
 	public boolean kickPlayer(String player, String message) {
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		target.disconnect(new ComponentBuilder("Ayaaaah!").create());
+		if (target == null) {
+			//Return to sender
+			return false;
+		}
+		target.disconnect(new ComponentBuilder(message).create());
 		target.sendMessage(new ComponentBuilder(message).create());
 		
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 

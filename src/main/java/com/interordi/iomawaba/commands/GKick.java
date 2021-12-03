@@ -22,24 +22,30 @@ public class GKick extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if ((sender instanceof ProxiedPlayer)) {
-			ProxiedPlayer p = (ProxiedPlayer)sender;
+			//ProxiedPlayer pSender = (ProxiedPlayer)sender;
+		}
 
-			if (args.length == 0)
-				sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
+		if (args.length == 0) {
+			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
+			return;
+		}
 
-			String targetRaw = args[0];
+		String targetRaw = args[0];
 
-			String message = "Kicked: ";
-			if (args.length > 1)
-				message += StringUtils.strJoin(args, " ", 1);
-			else
-				message += "No reason was specified";
+		String message = "Kicked: ";
+		if (args.length > 1)
+			message += StringUtils.strJoin(args, " ", 1);
+		else
+			message += "No reason was specified";
 
 
-			//Sends to lobby
-			//p.connect(ProxyServer.getInstance().getServerInfo("lobby"));
+		//Sends to lobby
+		//p.connect(ProxyServer.getInstance().getServerInfo("lobby"));
 
-			pa.kickPlayer(targetRaw, message);
+		boolean result = pa.kickPlayer(targetRaw, message);
+
+		if (!result) {
+			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
 		}
 		
 	}
