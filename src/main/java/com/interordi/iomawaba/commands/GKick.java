@@ -6,24 +6,20 @@ import com.interordi.iomawaba.utilities.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class GKick extends Command {
 
-	PlayerActions pa;
+	PlayerActions actions;
 
-	public GKick(PlayerActions pa) {
+	public GKick(PlayerActions actions) {
 		super("GKick");
-		this.pa = pa;
+		this.actions = actions;
 	}
 	
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		if ((sender instanceof ProxiedPlayer)) {
-			//ProxiedPlayer pSender = (ProxiedPlayer)sender;
-		}
 
 		if (args.length == 0) {
 			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
@@ -39,10 +35,7 @@ public class GKick extends Command {
 			message += "No reason was specified";
 
 
-		//Sends to lobby
-		//p.connect(ProxyServer.getInstance().getServerInfo("lobby"));
-
-		boolean result = pa.kickPlayer(targetRaw, message);
+		boolean result = actions.kickPlayer(targetRaw, message);
 
 		if (!result) {
 			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
@@ -50,4 +43,13 @@ public class GKick extends Command {
 		
 	}
 	
+
+		/*
+		if ((sender instanceof ProxiedPlayer)) {
+			ProxiedPlayer pSender = (ProxiedPlayer)sender;
+		}
+
+		//Sends to lobby
+		p.connect(ProxyServer.getInstance().getServerInfo("lobby"));
+		*/
 }
