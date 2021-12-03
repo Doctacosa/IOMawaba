@@ -27,6 +27,13 @@ public class PlayerActionsSpigot implements PlayerActions {
 
 
 	@Override
+	public boolean tempBanPlayer(String player, String message) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
 	public boolean banIp(String ip, String message) {
 		// TODO Auto-generated method stub
 		return false;

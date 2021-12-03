@@ -11,7 +11,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
+import com.interordi.iomawaba.commands.GBan;
+import com.interordi.iomawaba.commands.GBanIp;
 import com.interordi.iomawaba.commands.GKick;
+import com.interordi.iomawaba.commands.GTempBan;
+import com.interordi.iomawaba.commands.GUnban;
+import com.interordi.iomawaba.commands.GUnbanIp;
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.listeners.bungee.PlayersListener;
 import com.interordi.iomawaba.modules.PlayerActionsBungee;
@@ -68,11 +73,16 @@ public class IOMawabaBungee extends Plugin {
 			return;
 		}
 
-		PlayerActions pa = new PlayerActionsBungee();
+		PlayerActions actions = new PlayerActionsBungee();
 
 		getProxy().getPluginManager().registerListener(this, new PlayersListener());
 
-		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GKick(pa));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GKick(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GTempBan(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GBan(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GBanIp(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GUnban(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GUnbanIp(actions));
 
 		getLogger().info("IOMawaba enabled");
 	}

@@ -5,6 +5,7 @@ public interface PlayerActions {
 	//Do the actions
 	abstract boolean warnPlayer(String player, String message);
 	abstract boolean kickPlayer(String player, String message);
+	abstract boolean tempBanPlayer(String player, String message);
 	abstract boolean banPlayer(String player, String message);
 	abstract boolean banIp(String ip, String message);
 	

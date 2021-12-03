@@ -30,6 +30,13 @@ public class PlayerActionsBungee implements PlayerActions {
 
 
 	@Override
+	public boolean tempBanPlayer(String player, String message) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
 	public boolean banPlayer(String player, String message) {
 		// TODO Auto-generated method stub
 		return false;
