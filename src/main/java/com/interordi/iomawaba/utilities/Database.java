@@ -190,7 +190,6 @@ public class Database {
 	
 	
 	//Ban a player
-	//TODO: Switch to own table
 	public boolean banPlayer(UUID target, String from, int duration, String message) {
 		Connection conn = null;
 		String query = "";
@@ -204,16 +203,16 @@ public class Database {
 			
 			//Record today's visit
 			query = "" +
-				"INSERT INTO BAT_ban (UUID, ban_staff, ban_reason, ban_server, ban_begin, ban_end, ban_state) " +
+				"INSERT INTO io__bans (uuid, by_name, reason, server, begin, end, active) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, target.toString().replace("-", ""));
+			pstmt.setString(1, target.toString());
 			pstmt.setString(2, from);
 			pstmt.setString(3, message);
 			pstmt.setString(4, "(global)");
 			pstmt.setString(5, startTime.toString());
 			pstmt.setString(6, endTime.toString());
-			pstmt.setInt(1, 1);
+			pstmt.setInt(7, 1);
 			pstmt.executeUpdate();
 
 		} catch (SQLException ex) {
