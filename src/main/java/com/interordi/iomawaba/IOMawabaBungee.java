@@ -73,7 +73,7 @@ public class IOMawabaBungee extends Plugin {
 			return;
 		}
 
-		PlayerActions actions = new PlayerActionsBungee();
+		PlayerActions actions = new PlayerActionsBungee(db);
 
 		getProxy().getPluginManager().registerListener(this, new PlayersListener());
 

@@ -1,13 +1,34 @@
 package com.interordi.iomawaba.modules;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.Database;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class PlayerActionsSpigot implements PlayerActions {
+
+	Database db;
+	
+
+	public PlayerActionsSpigot(Database db) {
+		this.db = db;
+	}
+
 
 	@Override
 	public boolean warnPlayer(String player, String message) {
 		//NOTE: Called directly for now, only available at the server level
 		//Warnings.giveWarning(player, message);
+
+		Player target = Bukkit.getServer().getPlayer(player);
+		if (target == null) {
+			//Return to sender
+			return false;
+		}
+
+		db.logWarning(target.getUniqueId(), message, null, null);
+
 		return true;
 	}
 

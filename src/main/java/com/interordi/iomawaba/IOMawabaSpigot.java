@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.UUID;
-
+import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.modules.PlayerActionsSpigot;
 import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
@@ -45,6 +45,8 @@ public class IOMawabaSpigot extends JavaPlugin {
 			return;
 		}
 		
+		PlayerActions actions = new PlayerActionsSpigot(db);
+
 		warnings = new Warnings(this, db);
 
 		getLogger().info("IOMawaba enabled");
