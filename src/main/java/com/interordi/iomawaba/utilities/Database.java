@@ -156,7 +156,7 @@ public class Database {
 	
 	
 	//Log a new warning
-	public boolean logWarning(UUID uuid, String message, UUID byUuid, String byName) {
+	public boolean logWarning(UUID uuid, UUID sourceUuid, String sourceName, String message) {
 		Connection conn = null;
 		String query = "";
 		
@@ -167,13 +167,13 @@ public class Database {
 			
 			//Record today's visit
 			query = "" +
-				"INSERT INTO io__warnings (uuid, message, by_uuid, by_name, date) " +
+				"INSERT INTO io__warnings (uuid, by_uuid, by_name, message, date) " +
 				"VALUES (?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, uuid.toString());
 			pstmt.setString(2, message);
-			pstmt.setString(3, byUuid.toString());
-			pstmt.setString(4, byName);
+			pstmt.setString(3, sourceUuid.toString());
+			pstmt.setString(4, sourceName);
 			pstmt.setString(5, date.toString());
 			pstmt.executeUpdate();
 
@@ -190,7 +190,7 @@ public class Database {
 	
 	
 	//Ban a player
-	public boolean banPlayer(UUID target, String from, int duration, String message) {
+	public boolean banPlayer(UUID target, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
 		
@@ -198,21 +198,20 @@ public class Database {
 			conn = DriverManager.getConnection(database);
 
 			LocalDateTime startTime = LocalDateTime.now();
-			LocalDateTime endTime = LocalDateTime.now();
-			endTime = endTime.plusDays(duration);
 			
 			//Record today's visit
 			query = "" +
-				"INSERT INTO io__bans (uuid, by_name, reason, server, begin, end, active) " +
+				"INSERT INTO io__bans (uuid, by_uuid, by_name, reason, server, begin, end, active) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, target.toString());
-			pstmt.setString(2, from);
-			pstmt.setString(3, message);
-			pstmt.setString(4, "(global)");
-			pstmt.setString(5, startTime.toString());
-			pstmt.setString(6, endTime.toString());
-			pstmt.setInt(7, 1);
+			pstmt.setString(2, sourceUuid.toString());
+			pstmt.setString(3, sourceName);
+			pstmt.setString(4, message);
+			pstmt.setString(5, server);
+			pstmt.setString(6, startTime.toString());
+			pstmt.setString(7, endTime.toString());
+			pstmt.setInt(8, 1);
 			pstmt.executeUpdate();
 
 		} catch (SQLException ex) {

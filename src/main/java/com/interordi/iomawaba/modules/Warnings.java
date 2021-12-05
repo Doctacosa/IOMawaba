@@ -1,5 +1,6 @@
 package com.interordi.iomawaba.modules;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.IOMawabaSpigot;
@@ -59,6 +60,13 @@ public class Warnings {
 		boolean kick = false;
 		int ban = 0;
 
+		UUID senderUuid = null;
+		if (sender instanceof Player) {
+			Player pSender = (Player) sender;
+			senderUuid = pSender.getUniqueId();
+		}
+		final UUID finalSenderUuid = senderUuid;
+
 		if (nbWarnings >= 3) {
 			//Ban for 30d
 			ban = 30;
@@ -113,12 +121,13 @@ public class Warnings {
 		if (ban > 0) {
 			target.kickPlayer("You have been banned for " + ban + " days: " + message);
 			Bukkit.getServer().getLogger().info("|IOBAN|" + target.getDisplayName() + " was banned (" + ban + "): " + message);
-			final int finalBan = ban;
+			
+			LocalDateTime endTime = LocalDateTime.now().plusDays(ban);
 
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {
-					plugin.db.banPlayer(target.getUniqueId(), sender.getName(), finalBan, message);
+					plugin.db.banPlayer(target.getUniqueId(), finalSenderUuid, sender.getName(), null, endTime, message);
 				}
 			});
 		}
@@ -127,13 +136,7 @@ public class Warnings {
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			@Override
 			public void run() {
-				UUID senderUuid = null;
-				if (sender instanceof Player) {
-					Player pSender = (Player) sender;
-					senderUuid = pSender.getUniqueId();
-				}
-	
-				plugin.db.logWarning(target.getUniqueId(), message, senderUuid, sender.getName());
+				plugin.db.logWarning(target.getUniqueId(), finalSenderUuid, sender.getName(), message);
 			}
 		});
 

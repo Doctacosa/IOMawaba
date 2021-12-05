@@ -1,11 +1,14 @@
 package com.interordi.iomawaba.commands;
 
+import java.util.UUID;
+
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class GKick extends Command {
@@ -26,6 +29,12 @@ public class GKick extends Command {
 			return;
 		}
 
+		UUID senderUuid = null;
+		if (sender instanceof ProxiedPlayer) {
+			ProxiedPlayer pSender = (ProxiedPlayer) sender;
+			senderUuid = pSender.getUniqueId();
+		}
+
 		String targetRaw = args[0];
 
 		String message = "Kicked: ";
@@ -35,7 +44,7 @@ public class GKick extends Command {
 			message += "No reason was specified";
 
 
-		boolean result = actions.kickPlayer(targetRaw, message);
+		boolean result = actions.kickPlayer(targetRaw, senderUuid, sender.getName(), message);
 
 		if (!result) {
 			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
