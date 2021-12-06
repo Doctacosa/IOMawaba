@@ -37,11 +37,9 @@ public class GUnbanIp extends Command {
 
 		String targetRaw = args[0];
 
-		String message = "Kicked: ";
+		String message = "";
 		if (args.length > 1)
 			message += StringUtils.strJoin(args, " ", 1);
-		else
-			message += "No reason was specified";
 
 
 		boolean result = actions.unbanIp(targetRaw, senderUuid, sender.getName(), message);
