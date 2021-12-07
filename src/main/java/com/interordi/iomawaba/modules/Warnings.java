@@ -129,7 +129,7 @@ public class Warnings {
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {
-					plugin.db.banPlayer(target.getUniqueId(), finalSenderUuid, sender.getName(), null, endTime, message);
+					plugin.db.banTarget(target.getUniqueId(), null, finalSenderUuid, sender.getName(), null, endTime, message);
 				}
 			});
 		}

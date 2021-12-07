@@ -8,14 +8,18 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
 public class Database {
 	
 	private String database = "";
+	private Set< BanData > bans = new HashSet< BanData >();
 
 
 	public Database(String dbHost, int dbPort, String dbUsername, String dbPassword, String dbBase) {
@@ -153,6 +157,56 @@ public class Database {
 
 		return warnings;
 	}
+
+
+	//Load the list of active bans
+	public void getActiveBans() {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String query = "";
+
+		LocalDateTime datetime = LocalDateTime.now();
+		
+		try {
+			conn = DriverManager.getConnection(database);
+			
+			pstmt = conn.prepareStatement("" +
+				"SELECT uuid, ip, reason, server, end, active " + 
+				"FROM io__warnings " +
+				"WHERE unban_date IS NULL " +
+				"  AND `end` < ?"
+			);
+			
+			pstmt.setString(1, datetime.toString());
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				BanData ban = new BanData(
+					UUID.fromString(rs.getString("uuid")),
+					rs.getString("ip"),
+					rs.getString("reason"),
+					rs.getString("server"),
+					LocalDateTime.parse(
+						rs.getString("end"),
+						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+					)
+				);
+
+				bans.add(ban);
+			}
+			rs.close();
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("Query: " + query);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+
+	}
 	
 	
 	//Log a new warning
@@ -190,7 +244,7 @@ public class Database {
 	
 	
 	//Ban a player
-	public boolean banPlayer(UUID target, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
+	public boolean banTarget(UUID target, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
 		
@@ -221,6 +275,15 @@ public class Database {
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
+
+		//Save locally too
+		bans.add(new BanData(
+			target,
+			ip,
+			message,
+			server,
+			endTime
+		));
 
 		return true;
 	}

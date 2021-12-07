@@ -62,7 +62,7 @@ public class PlayerActionsBungee implements PlayerActions {
 			return false;
 		}
 
-		db.banPlayer(target.getUniqueId(), sourceUuid, sourceName, null, null, message);
+		db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, null, message);
 
 		target.disconnect(new ComponentBuilder(message).create());
 
