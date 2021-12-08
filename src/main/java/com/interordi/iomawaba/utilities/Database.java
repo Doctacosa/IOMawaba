@@ -295,9 +295,8 @@ public class Database {
 		LocalDateTime now = LocalDateTime.now();
 
 		for (BanData ban : bans) {
-			//TODO: Double-check condition
-			if (uuid == ban.uuid &&
-				ip == ban.ip &&
+			//TODO: Limit per server if wanted
+			if ((uuid == ban.uuid || ip == ban.ip) &&
 				(ban.end == null || ban.end.compareTo(now) > 0))
 				return ban;
 		}
