@@ -287,4 +287,22 @@ public class Database {
 
 		return true;
 	}
+
+
+	//Get a ban for this player, if set
+	public BanData getBan(UUID uuid, String ip) {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		for (BanData ban : bans) {
+			//TODO: Double-check condition
+			if (uuid == ban.uuid &&
+				ip == ban.ip &&
+				(ban.end == null || ban.end.compareTo(now) > 0))
+				return ban;
+		}
+
+		return null;
+
+	}
 }

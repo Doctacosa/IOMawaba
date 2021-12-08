@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.modules.Bans;
 import com.interordi.iomawaba.modules.PlayerActionsSpigot;
 import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
@@ -22,6 +23,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 	public Database db = null;
 
 	public Warnings warnings;
+	public Bans bans;
 
 	
 	public void onEnable() {
@@ -48,6 +50,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 		PlayerActions actions = new PlayerActionsSpigot(db);
 
 		warnings = new Warnings(this, db);
+		bans = new Bans(db);
 
 		getLogger().info("IOMawaba enabled");
 	}
