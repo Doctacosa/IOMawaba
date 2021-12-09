@@ -244,7 +244,7 @@ public class Database {
 	
 	
 	//Ban a player
-	public boolean banTarget(UUID target, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
+	public BanData banTarget(UUID target, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
 		
@@ -277,15 +277,16 @@ public class Database {
 		}
 
 		//Save locally too
-		bans.add(new BanData(
+		BanData ban = new BanData(
 			target,
 			ip,
 			message,
 			server,
 			endTime
-		));
+		);
+		bans.add(ban);
 
-		return true;
+		return ban;
 	}
 
 

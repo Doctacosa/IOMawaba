@@ -3,10 +3,12 @@ package com.interordi.iomawaba.modules;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.BanData;
 import com.interordi.iomawaba.utilities.Database;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class PlayerActionsBungee implements PlayerActions {
@@ -72,8 +74,18 @@ public class PlayerActionsBungee implements PlayerActions {
 
 	@Override
 	public boolean banIp(String ip, UUID sourceUuid, String sourceName, String message) {
-		//TODO: Scan all current players
-		return false;
+
+		BanData ban = db.banTarget(null, ip, sourceUuid, sourceName, null, null, message);
+
+		//TODO: Announce in chat
+
+		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+			if (ip.equals(player.getAddress().toString())) {
+				player.disconnect(new TextComponent(Bans.formatMessage(ban)));
+			}
+		}
+		
+		return true;
 	}
 
 
