@@ -15,6 +15,7 @@ import com.interordi.iomawaba.commands.GBan;
 import com.interordi.iomawaba.commands.GBanIp;
 import com.interordi.iomawaba.commands.GKick;
 import com.interordi.iomawaba.commands.GTempBan;
+import com.interordi.iomawaba.commands.GTempBanIp;
 import com.interordi.iomawaba.commands.GUnban;
 import com.interordi.iomawaba.commands.GUnbanIp;
 import com.interordi.iomawaba.interfaces.PlayerActions;
@@ -79,6 +80,7 @@ public class IOMawabaBungee extends Plugin {
 
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GKick(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GTempBan(actions));
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GTempBanIp(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GBan(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GBanIp(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GUnban(actions));

@@ -1,5 +1,6 @@
 package com.interordi.iomawaba.modules;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
@@ -50,7 +51,14 @@ public class PlayerActionsSpigot implements PlayerActions {
 
 
 	@Override
-	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 		// TODO Auto-generated method stub
 		return false;
 	}

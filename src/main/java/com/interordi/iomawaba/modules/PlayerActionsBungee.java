@@ -1,5 +1,6 @@
 package com.interordi.iomawaba.modules;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
@@ -43,15 +44,34 @@ public class PlayerActionsBungee implements PlayerActions {
 
 
 	@Override
-	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
 		if (target == null) {
 			//Return to sender
 			return false;
 		}
 
-		target.disconnect(new ComponentBuilder(message).create());
+		BanData ban = db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, endTime, message);
 
+		target.disconnect(new TextComponent(Bans.formatMessage(ban)));
+
+		return true;
+	}
+
+
+	@Override
+	public boolean tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+
+		BanData ban = db.banTarget(null, ip, sourceUuid, sourceName, null, endTime, message);
+
+		//TODO: Announce in chat
+
+		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+			if (ip.equals(player.getAddress().toString())) {
+				player.disconnect(new TextComponent(Bans.formatMessage(ban)));
+			}
+		}
+		
 		return true;
 	}
 
@@ -64,9 +84,9 @@ public class PlayerActionsBungee implements PlayerActions {
 			return false;
 		}
 
-		db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, null, message);
+		BanData ban = db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, null, message);
 
-		target.disconnect(new ComponentBuilder(message).create());
+		target.disconnect(new TextComponent(Bans.formatMessage(ban)));
 
 		return true;
 	}

@@ -12,12 +12,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class GTempBan extends Command {
+public class GTempBanIp extends Command {
 
 	PlayerActions actions;
 
-	public GTempBan(PlayerActions actions) {
-		super("GTempBan");
+	public GTempBanIp(PlayerActions actions) {
+		super("GTempBanIp");
 		this.actions = actions;
 	}
 	
@@ -26,7 +26,7 @@ public class GTempBan extends Command {
 	public void execute(CommandSender sender, String[] args) {
 
 		if (args.length == 0) {
-			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
+			sender.sendMessage(new ComponentBuilder("You must specify a target address.").color(ChatColor.RED).create());
 			return;
 		}
 
@@ -36,7 +36,7 @@ public class GTempBan extends Command {
 			senderUuid = pSender.getUniqueId();
 		}
 
-		String targetRaw = args[0];
+		String targetIp = args[0];
 		LocalDateTime endTime = LocalDateTime.now();
 
 		String message = "";
@@ -44,12 +44,8 @@ public class GTempBan extends Command {
 			message += StringUtils.strJoin(args, " ", 1);
 
 
-		boolean result = actions.tempBanPlayer(targetRaw, senderUuid, sender.getName(), endTime, message);
+		boolean result = actions.tempBanIp(targetIp, senderUuid, sender.getName(), endTime, message);
 
-		if (!result) {
-			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
-		}
-		
 	}
 	
 }
