@@ -51,9 +51,11 @@ public class PlayerActionsBungee implements PlayerActions {
 			return false;
 		}
 
-		BanData ban = db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, endTime, message);
+		BanData ban = db.banTarget(target.getUniqueId(), player, null, sourceUuid, sourceName, null, endTime, message);
 
-		target.disconnect(new TextComponent(Bans.formatMessage(ban)));
+		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
+
+		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 
 		return true;
 	}
@@ -62,16 +64,18 @@ public class PlayerActionsBungee implements PlayerActions {
 	@Override
 	public boolean tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 
-		BanData ban = db.banTarget(null, ip, sourceUuid, sourceName, null, endTime, message);
+		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
 
 		//TODO: Announce in chat
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
 			if (ip.equals(player.getAddress().toString())) {
-				player.disconnect(new TextComponent(Bans.formatMessage(ban)));
+				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
-		
+
+		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+
 		return true;
 	}
 
@@ -84,9 +88,11 @@ public class PlayerActionsBungee implements PlayerActions {
 			return false;
 		}
 
-		BanData ban = db.banTarget(target.getUniqueId(), null, sourceUuid, sourceName, null, null, message);
+		BanData ban = db.banTarget(target.getUniqueId(), player, null, sourceUuid, sourceName, null, null, message);
 
-		target.disconnect(new TextComponent(Bans.formatMessage(ban)));
+		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
+
+		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 
 		return true;
 	}
@@ -95,15 +101,15 @@ public class PlayerActionsBungee implements PlayerActions {
 	@Override
 	public boolean banIp(String ip, UUID sourceUuid, String sourceName, String message) {
 
-		BanData ban = db.banTarget(null, ip, sourceUuid, sourceName, null, null, message);
-
-		//TODO: Announce in chat
+		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, null, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
 			if (ip.equals(player.getAddress().toString())) {
-				player.disconnect(new TextComponent(Bans.formatMessage(ban)));
+				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
+
+		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		
 		return true;
 	}

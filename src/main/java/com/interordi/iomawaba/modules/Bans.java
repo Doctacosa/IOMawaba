@@ -24,8 +24,8 @@ public class Bans {
 	}
 
 
-	//Format a full ban message for display
-	public static String formatMessage(BanData ban) {
+	//Format a full ban message for the target
+	public static String formatMessageTarget(BanData ban) {
 		String message = "";
 		if (ban.end != null)
 			message += "You have been temporarily banned: ";
@@ -38,6 +38,27 @@ public class Bans {
 		if (ban.end != null)
 			message += "\n\nYour ban will end on " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " UTC";
 
+		return message;
+	}
+
+	
+	//Format a full ban message for broadcast
+	public static String formatMessageGlobal(BanData ban) {
+		String target = "";
+		if (!ban.ip.isEmpty())
+			target = ban.ip;
+		else
+			target = ban.targetName;
+
+		String message = "";
+		if (ban.end != null)
+			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " UTC: ";
+		else
+			message += target + " has been permanently banned: ";
+
+		if (ban.reason.isEmpty())
+			message += "No reason was specifi4ed";
+		
 		return message;
 	}
 

@@ -18,16 +18,11 @@ public class PlayersListener implements Listener {
 		);
 
 		if (ban != null) {
-			String message = Bans.formatMessage(ban);
+			String message = Bans.formatMessageTarget(ban);
 
 			event.getPlayer().disconnect(new TextComponent(message));
 		}
 
-		/*
-		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			player.sendMessage(new TextComponent(event.getPlayer().getName() + " has joined the network."));
-		}
-		*/
 	}
 	
 }

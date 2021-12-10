@@ -185,6 +185,7 @@ public class Database {
 			while (rs.next()) {
 				BanData ban = new BanData(
 					UUID.fromString(rs.getString("uuid")),
+					null,
 					rs.getString("ip"),
 					rs.getString("reason"),
 					rs.getString("server"),
@@ -244,7 +245,7 @@ public class Database {
 	
 	
 	//Ban a player
-	public BanData banTarget(UUID target, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
+	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
 		
@@ -258,7 +259,7 @@ public class Database {
 				"INSERT INTO io__bans (uuid, by_uuid, by_name, reason, server, begin, end, active) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, target.toString());
+			pstmt.setString(1, targetUuid.toString());
 			pstmt.setString(2, sourceUuid.toString());
 			pstmt.setString(3, sourceName);
 			pstmt.setString(4, message);
@@ -278,7 +279,8 @@ public class Database {
 
 		//Save locally too
 		BanData ban = new BanData(
-			target,
+			targetUuid,
+			targetName,
 			ip,
 			message,
 			server,
