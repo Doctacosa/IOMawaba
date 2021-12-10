@@ -24,6 +24,11 @@ public class GUnban extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 
+		if (!sender.hasPermission("iomawaba.admin")) {
+			sender.sendMessage(new ComponentBuilder("You don't have permission to use this command.").color(ChatColor.RED).create());
+			return;
+		}
+
 		if (args.length == 0) {
 			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
 			return;
