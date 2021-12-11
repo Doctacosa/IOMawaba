@@ -7,6 +7,7 @@ import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.utilities.BanData;
 import com.interordi.iomawaba.utilities.Database;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -66,8 +67,6 @@ public class PlayerActionsBungee implements PlayerActions {
 
 		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
 
-		//TODO: Announce in chat
-
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
 			if (ip.equals(player.getAddress().toString())) {
 				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
@@ -117,39 +116,36 @@ public class PlayerActionsBungee implements PlayerActions {
 
 	@Override
 	public boolean unwarnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
-		/*
-		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target == null) {
-			//Return to sender
-			return false;
-		}
-		*/
-		//TODO: Scan database and unwarn if possible
+		//TODO: Not implemented at the proxy level
 		return false;
 	}
 
 
 	@Override
 	public boolean unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
-		/*
-		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target == null) {
-			//Return to sender
-			return false;
-		}
-		*/
+		boolean result = db.unbanTarget(null, player, null, sourceUuid, sourceName, null, message);
 
+		ProxiedPlayer source = ProxyServer.getInstance().getPlayer(sourceUuid);
+		if (result)
+			source.sendMessage(new ComponentBuilder("Player " + player + " has been unbanned.").color(ChatColor.GREEN).create());
+		else
+			source.sendMessage(new ComponentBuilder("Player " + player + " has not been found.").color(ChatColor.RED).create());
 
-
-		//TODO: Scan database and unban if possible
-		return false;
+		return result;
 	}
 
 
 	@Override
 	public boolean unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
-		//TODO: Scan database and unban if possible
-		return false;
+		boolean result = db.unbanTarget(null, null, ip, sourceUuid, sourceName, null, message);
+
+		ProxiedPlayer source = ProxyServer.getInstance().getPlayer(sourceUuid);
+		if (result)
+			source.sendMessage(new ComponentBuilder("The IP address " + ip + " has been unbanned.").color(ChatColor.GREEN).create());
+		else
+			source.sendMessage(new ComponentBuilder("The IP address " + ip + " has not been found.").color(ChatColor.RED).create());
+
+		return result;
 	}
 	
 }

@@ -244,7 +244,7 @@ public class Database {
 	}
 	
 	
-	//Ban a player
+	//Ban a target
 	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
@@ -289,6 +289,97 @@ public class Database {
 		bans.add(ban);
 
 		return ban;
+	}
+
+
+	//Unban a target
+	public boolean unbanTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, String message) {
+		Connection conn = null;
+		String query = "";
+		
+		try {
+			conn = DriverManager.getConnection(database);
+
+			LocalDateTime clearTime = LocalDateTime.now();
+
+			if (ip != null) {
+				query = "" +
+					"UPDATE io__bans " +
+					"SET active = 0, unban_date = ?, unban_by_uuid = ?, unban_by_name = ?, unban_reason = ? " +
+					"WHERE ip = ? ";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, clearTime.toString());
+				pstmt.setString(2, sourceUuid.toString());
+				pstmt.setString(3, sourceName);
+				pstmt.setString(4, message);
+				pstmt.setString(5, ip);
+				pstmt.executeUpdate();
+			} else {
+				//TODO: UUID lookup
+				targetUuid = getUuidFromUsername(targetName);
+				if (targetUuid == null)
+					return false;
+
+				query = "" +
+					"UPDATE io__bans " +
+					"SET active = 0, unban_date = ?, unban_by_uuid = ?, unban_by_name = ?, unban_reason = ? " +
+					"WHERE uuid = ? ";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, clearTime.toString());
+				pstmt.setString(2, sourceUuid.toString());
+				pstmt.setString(3, sourceName);
+				pstmt.setString(4, message);
+				pstmt.setString(5, targetUuid.toString());
+				pstmt.executeUpdate();
+			}
+
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("Query: " + query);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+
+		return true;
+	}
+
+
+	//Get the UUID for the given username
+	//TODO: Consider using another source, or a Mojang lookup
+	public UUID getUuidFromUsername(String username) {
+
+		Connection conn = null;
+		String query = "";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		UUID targetUuid = null;
+
+		try {
+			conn = DriverManager.getConnection(database);
+
+			query = "" +
+				"SELECT uuid " + 
+				"FROM stats_io_players " +
+				"WHERE name = ? ";
+			pstmt = conn.prepareStatement(query);
+			
+			pstmt.setString(1, username.toString());
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				targetUuid = UUID.fromString(rs.getString("uuid"));
+			}
+			rs.close();
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("Query: " + query);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+		return targetUuid;
 	}
 
 
