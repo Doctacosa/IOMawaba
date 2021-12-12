@@ -8,8 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.interfaces.PluginLogger;
 import com.interordi.iomawaba.modules.Bans;
 import com.interordi.iomawaba.modules.PlayerActionsSpigot;
+import com.interordi.iomawaba.modules.PluginLoggerSpigot;
 import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.CommandTargets;
 import com.interordi.iomawaba.utilities.Commands;
@@ -21,6 +23,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 	public static IOMawabaSpigot instance;
 	
 	public Database db = null;
+	public PluginLogger logger = null;
 
 	public Warnings warnings;
 	public Bans bans;
@@ -48,6 +51,8 @@ public class IOMawabaSpigot extends JavaPlugin {
 		}
 		
 		PlayerActions actions = new PlayerActionsSpigot(db);
+		logger = new PluginLoggerSpigot();
+		db.setLogger(logger);
 
 		warnings = new Warnings(this, db);
 		bans = new Bans(db);

@@ -15,9 +15,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.interordi.iomawaba.interfaces.PluginLogger;
+
 
 public class Database {
 	
+	private PluginLogger logger = null;
+
 	private String database = "";
 	private Set< BanData > bans = new HashSet< BanData >();
 
@@ -149,10 +153,10 @@ public class Database {
 			rs.close();
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 
 		return warnings;
@@ -200,10 +204,10 @@ public class Database {
 			rs.close();
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 		
 
@@ -234,10 +238,10 @@ public class Database {
 
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 
 		return true;
@@ -271,10 +275,10 @@ public class Database {
 
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 
 		//Save locally too
@@ -335,10 +339,10 @@ public class Database {
 
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 
 		return true;
@@ -373,10 +377,10 @@ public class Database {
 			rs.close();
 		} catch (SQLException ex) {
 			// handle any errors
-			System.out.println("Query: " + query);
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 		
 		return targetUuid;
@@ -397,5 +401,10 @@ public class Database {
 
 		return null;
 
+	}
+
+
+	public void setLogger(PluginLogger logger) {
+		this.logger = logger;
 	}
 }
