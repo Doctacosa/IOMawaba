@@ -26,8 +26,9 @@ public class Database {
 	private Set< BanData > bans = new HashSet< BanData >();
 
 
-	public Database(String dbHost, int dbPort, String dbUsername, String dbPassword, String dbBase) {
+	public Database(String dbHost, int dbPort, String dbUsername, String dbPassword, String dbBase, PluginLogger logger) {
 		database = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbBase + "?user=" + dbUsername + "&password=" + dbPassword + "&useSSL=false";
+		this.logger = logger;
 	}
 	
 	

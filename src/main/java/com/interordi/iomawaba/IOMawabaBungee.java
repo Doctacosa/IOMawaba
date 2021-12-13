@@ -64,13 +64,15 @@ public class IOMawabaBungee extends Plugin {
 			return;
 		}
 
+		logger = new PluginLoggerBungee();
+
 		String dbHost = configuration.getString("database.host", null);
 		int dbPort = configuration.getInt("database.port", 3306);
 		String dbUsername = configuration.getString("database.username");
 		String dbPassword = configuration.getString("database.password");
 		String dbBase = configuration.getString("database.base");
 
-		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
+		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase, logger);
 		if (!db.init()) {
 			getLogger().severe("---------------------------------");
 			getLogger().severe("Failed to initialize the database");
@@ -80,8 +82,6 @@ public class IOMawabaBungee extends Plugin {
 		}
 
 		PlayerActions actions = new PlayerActionsBungee(db);
-		logger = new PluginLoggerBungee();
-		db.setLogger(logger);
 
 		getProxy().getPluginManager().registerListener(this, new PlayersListener());
 

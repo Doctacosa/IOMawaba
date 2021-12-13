@@ -34,6 +34,8 @@ public class IOMawabaSpigot extends JavaPlugin {
 
 		//Always ensure we've got a copy of the config in place (does not overwrite existing)
 		this.saveDefaultConfig();
+
+		logger = new PluginLoggerSpigot();
 		
 		String dbHost = this.getConfig().getString("database.host", null);
 		int dbPort = this.getConfig().getInt("database.port", 3306);
@@ -41,7 +43,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 		String dbPassword = this.getConfig().getString("database.password");
 		String dbBase = this.getConfig().getString("database.base");
 
-		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase);
+		db = new Database(dbHost, dbPort, dbUsername, dbPassword, dbBase, logger);
 		if (!db.init()) {
 			getLogger().severe("---------------------------------");
 			getLogger().severe("Failed to initialize the database");
@@ -51,8 +53,6 @@ public class IOMawabaSpigot extends JavaPlugin {
 		}
 		
 		PlayerActions actions = new PlayerActionsSpigot(db);
-		logger = new PluginLoggerSpigot();
-		db.setLogger(logger);
 
 		warnings = new Warnings(this, db);
 		bans = new Bans(db);
