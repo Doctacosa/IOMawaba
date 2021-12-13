@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
-import com.interordi.iomawaba.modules.Warnings;
+import com.interordi.iomawaba.modules.Bans;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -43,7 +43,7 @@ public class GTempBan extends Command {
 		}
 
 		String targetRaw = args[0];
-		LocalDateTime endTime = Warnings.parseDuration(args[1]);
+		LocalDateTime endTime = Bans.parseDuration(args[1]);
 
 		if (endTime == null) {
 			sender.sendMessage(new ComponentBuilder("Invalid duration specified: " + args[1]).color(ChatColor.RED).create());
