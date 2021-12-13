@@ -222,16 +222,19 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 
-			LocalDate date = LocalDate.now();
+			LocalDateTime date = LocalDateTime.now();
+
+			String sUuid = (uuid != null) ? uuid.toString() : null;
+			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
 			
 			//Record today's visit
 			query = "" +
 				"INSERT INTO io__warnings (uuid, by_uuid, by_name, message, date) " +
 				"VALUES (?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, uuid.toString());
+			pstmt.setString(1, sUuid);
 			pstmt.setString(2, message);
-			pstmt.setString(3, sourceUuid.toString());
+			pstmt.setString(3, sSourceUuid);
 			pstmt.setString(4, sourceName);
 			pstmt.setString(5, date.toString());
 			pstmt.executeUpdate();
@@ -257,19 +260,24 @@ public class Database {
 			conn = DriverManager.getConnection(database);
 
 			LocalDateTime startTime = LocalDateTime.now();
+
+			String sTargetUuid = (targetUuid != null) ? targetUuid.toString() : null;
+			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
+			String sStartTime = (startTime != null) ? startTime.toString() : null;
+			String sEndTime = (endTime != null) ? endTime.toString() : null;
 			
 			//Record today's visit
 			query = "" +
 				"INSERT INTO io__bans (uuid, by_uuid, by_name, reason, server, begin, end, active) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, targetUuid.toString());
-			pstmt.setString(2, sourceUuid.toString());
+			pstmt.setString(1, sTargetUuid);
+			pstmt.setString(2, sSourceUuid);
 			pstmt.setString(3, sourceName);
 			pstmt.setString(4, message);
 			pstmt.setString(5, server);
-			pstmt.setString(6, startTime.toString());
-			pstmt.setString(7, endTime.toString());
+			pstmt.setString(6, sStartTime);
+			pstmt.setString(7, sEndTime);
 			pstmt.setInt(8, 1);
 			pstmt.executeUpdate();
 
@@ -306,6 +314,9 @@ public class Database {
 
 			LocalDateTime clearTime = LocalDateTime.now();
 
+			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
+			String sTargetUuid = (targetUuid != null) ? targetUuid.toString() : null;
+
 			if (ip != null) {
 				query = "" +
 					"UPDATE io__bans " +
@@ -313,16 +324,16 @@ public class Database {
 					"WHERE ip = ? ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, clearTime.toString());
-				pstmt.setString(2, sourceUuid.toString());
+				pstmt.setString(2, sSourceUuid);
 				pstmt.setString(3, sourceName);
 				pstmt.setString(4, message);
 				pstmt.setString(5, ip);
 				pstmt.executeUpdate();
 			} else {
-				//TODO: UUID lookup
 				targetUuid = getUuidFromUsername(targetName);
 				if (targetUuid == null)
 					return false;
+				sTargetUuid = (targetUuid != null) ? targetUuid.toString() : null;
 
 				query = "" +
 					"UPDATE io__bans " +
@@ -330,10 +341,10 @@ public class Database {
 					"WHERE uuid = ? ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, clearTime.toString());
-				pstmt.setString(2, sourceUuid.toString());
+				pstmt.setString(2, sSourceUuid);
 				pstmt.setString(3, sourceName);
 				pstmt.setString(4, message);
-				pstmt.setString(5, targetUuid.toString());
+				pstmt.setString(5, sTargetUuid);
 				pstmt.executeUpdate();
 			}
 
