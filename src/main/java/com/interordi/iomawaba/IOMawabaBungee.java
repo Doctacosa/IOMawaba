@@ -21,6 +21,7 @@ import com.interordi.iomawaba.commands.GUnbanIp;
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.interfaces.PluginLogger;
 import com.interordi.iomawaba.listeners.bungee.PlayersListener;
+import com.interordi.iomawaba.modules.Bans;
 import com.interordi.iomawaba.modules.PlayerActionsBungee;
 import com.interordi.iomawaba.modules.PluginLoggerBungee;
 import com.interordi.iomawaba.modules.Warnings;
@@ -34,6 +35,7 @@ public class IOMawabaBungee extends Plugin {
 	public PluginLogger logger = null;
 
 	public Warnings warnings;
+	public Bans bans;
 
 	
 	public void onEnable() {
@@ -90,6 +92,9 @@ public class IOMawabaBungee extends Plugin {
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GBanIp(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GUnban(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GUnbanIp(actions));
+
+		//warnings = new Warnings(this, db);
+		bans = new Bans(db);
 
 		getLogger().info("IOMawaba enabled");
 	}
