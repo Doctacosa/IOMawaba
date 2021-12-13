@@ -42,7 +42,7 @@ public class GBan extends Command {
 
 		String targetRaw = args[0];
 
-		String message = "Kicked: ";
+		String message = "";
 		if (args.length > 1)
 			message += StringUtils.strJoin(args, " ", 1);
 		else

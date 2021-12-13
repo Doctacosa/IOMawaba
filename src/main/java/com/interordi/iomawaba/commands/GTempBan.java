@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.modules.Warnings;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -30,8 +31,8 @@ public class GTempBan extends Command {
 			return;
 		}
 
-		if (args.length == 0) {
-			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
+		if (args.length < 2) {
+			sender.sendMessage(new ComponentBuilder("You must specify a target name then a duration.").color(ChatColor.RED).create());
 			return;
 		}
 
@@ -42,11 +43,16 @@ public class GTempBan extends Command {
 		}
 
 		String targetRaw = args[0];
-		LocalDateTime endTime = LocalDateTime.now();
+		LocalDateTime endTime = Warnings.parseDuration(args[1]);
+
+		if (endTime == null) {
+			sender.sendMessage(new ComponentBuilder("Invalid duration specified: " + args[1]).color(ChatColor.RED).create());
+			return;
+		}
 
 		String message = "";
-		if (args.length > 1)
-			message += StringUtils.strJoin(args, " ", 1);
+		if (args.length > 2)
+			message += StringUtils.strJoin(args, " ", 2);
 
 
 		boolean result = actions.tempBanPlayer(targetRaw, senderUuid, sender.getName(), endTime, message);

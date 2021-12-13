@@ -32,7 +32,9 @@ public class Bans {
 		else
 			message += "You have been permanently banned: ";
 
-		if (ban.reason.isEmpty())
+		if (!ban.reason.isEmpty())
+			message += ban.reason;
+		else
 			message += "No reason was specified";
 		
 		if (ban.end != null)
@@ -45,7 +47,7 @@ public class Bans {
 	//Format a full ban message for broadcast
 	public static String formatMessageGlobal(BanData ban) {
 		String target = "";
-		if (!ban.ip.isEmpty())
+		if (ban.ip != null && !ban.ip.isEmpty())
 			target = ban.ip;
 		else
 			target = ban.targetName;
