@@ -41,7 +41,7 @@ public class Bans {
 			message += "No reason was specified";
 		
 		if (ban.end != null)
-			message += "\n\nYour ban will end on " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " UTC";
+			message += "\n\nYour ban will end on " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "";
 
 		return message;
 	}
@@ -57,7 +57,7 @@ public class Bans {
 
 		String message = "";
 		if (ban.end != null)
-			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " UTC: ";
+			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": ";
 		else
 			message += target + " has been permanently banned: ";
 
