@@ -376,7 +376,16 @@ public class Database {
 			logger.warning("VendorError: " + ex.getErrorCode());
 		}
 
-		//TODO: Unban in cache
+		//Mirror the changes in the cache
+		Set< BanData > bansCopy = new HashSet< BanData >();
+		bansCopy.addAll(bans);
+		for (BanData ban : bansCopy) {
+			if (ip != null && ip.equals(ban.ip) ||
+				(targetUuid.equals(ban.uuid))) {
+				
+				bans.remove(ban);
+			}
+		}
 
 		return true;
 	}
