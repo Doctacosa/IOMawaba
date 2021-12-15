@@ -8,6 +8,7 @@ import com.interordi.iomawaba.utilities.BanData;
 import com.interordi.iomawaba.utilities.Database;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -68,7 +69,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			if (ip.equals(player.getAddress().toString())) {
+			if (ip.equals(player.getAddress().getHostString())) {
 				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
@@ -103,7 +104,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, null, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			if (ip.equals(player.getAddress().toString())) {
+			if (ip.equals(player.getAddress().getHostString())) {
 				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
@@ -125,7 +126,10 @@ public class PlayerActionsBungee implements PlayerActions {
 	public boolean unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		boolean result = db.unbanTarget(null, player, null, sourceUuid, sourceName, null, message);
 
-		ProxiedPlayer source = ProxyServer.getInstance().getPlayer(sourceUuid);
+		CommandSender source = ProxyServer.getInstance().getPlayer(sourceUuid);
+		if (source == null)
+			source = ProxyServer.getInstance().getConsole();
+
 		if (result)
 			source.sendMessage(new ComponentBuilder("Player " + player + " has been unbanned.").color(ChatColor.GREEN).create());
 		else

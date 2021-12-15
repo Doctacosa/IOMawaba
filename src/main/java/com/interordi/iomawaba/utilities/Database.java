@@ -47,12 +47,12 @@ public class Database {
 			pstmt = conn.prepareStatement("" +
 				"CREATE TABLE IF NOT EXISTS `io__bans` ( " +
 				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
-				"  `uuid` varchar(36) NOT NULL, " +
+				"  `uuid` varchar(36) NULL, " +
 				"  `ip` varchar(50) DEFAULT NULL, " +
-				"  `by_uuid` varchar(36) NOT NULL, " +
+				"  `by_uuid` varchar(36) NULL, " +
 				"  `by_name` varchar(30) NOT NULL, " +
 				"  `reason` varchar(100) DEFAULT NULL, " +
-				"  `server` varchar(30) NOT NULL, " +
+				"  `server` varchar(30) NULL, " +
 				"  `begin` timestamp NOT NULL DEFAULT current_timestamp(), " +
 				"  `end` timestamp NULL DEFAULT NULL, " +
 				"  `active` tinyint(1) NOT NULL DEFAULT 1, " +
@@ -88,6 +88,10 @@ public class Database {
 			System.err.println("VendorError: " + ex.getErrorCode());
 			return false;
 		}
+
+
+		//Pre-load the bans for faster processing
+		getActiveBans();
 
 		return true;
 	}
@@ -179,25 +183,38 @@ public class Database {
 			
 			pstmt = conn.prepareStatement("" +
 				"SELECT uuid, ip, reason, server, end, active " + 
-				"FROM io__warnings " +
+				"FROM io__bans " +
 				"WHERE unban_date IS NULL " +
-				"  AND `end` < ?"
+				"  AND (`end` < ? OR `end` IS NULL) "
 			);
 			
 			pstmt.setString(1, datetime.toString());
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
+				UUID uuid = null;
+				LocalDateTime endDate = null;
+
+				System.out.println("Read UUID: " + rs.getString("uuid"));
+
+				if (rs.getString("uuid") != null && !rs.getString("uuid").isEmpty()) {
+					uuid = UUID.fromString(rs.getString("uuid"));
+				}
+				
+				if (rs.getString("end") != null) {
+					endDate = LocalDateTime.parse(
+						rs.getString("end"),
+						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+					);
+				}
+
 				BanData ban = new BanData(
-					UUID.fromString(rs.getString("uuid")),
+					uuid,
 					null,
 					rs.getString("ip"),
 					rs.getString("reason"),
 					rs.getString("server"),
-					LocalDateTime.parse(
-						rs.getString("end"),
-						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-					)
+					endDate
 				);
 
 				bans.add(ban);
@@ -270,7 +287,7 @@ public class Database {
 			//Record today's visit
 			query = "" +
 				"INSERT INTO io__bans (uuid, by_uuid, by_name, reason, server, begin, end, active) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?) ";
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, sTargetUuid);
 			pstmt.setString(2, sSourceUuid);
@@ -384,7 +401,8 @@ public class Database {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				targetUuid = UUID.fromString(rs.getString("uuid"));
+				if (rs.getString("uuid") != null && !rs.getString("uuid").isEmpty())
+					targetUuid = UUID.fromString(rs.getString("uuid"));
 			}
 			rs.close();
 		} catch (SQLException ex) {
@@ -406,7 +424,7 @@ public class Database {
 
 		for (BanData ban : bans) {
 			//TODO: Limit per server if wanted
-			if ((uuid == ban.uuid || ip == ban.ip) &&
+			if ((uuid.equals(ban.uuid) || ip.equals(ban.ip)) &&
 				(ban.end == null || ban.end.compareTo(now) > 0))
 				return ban;
 		}

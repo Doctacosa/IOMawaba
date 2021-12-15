@@ -14,7 +14,7 @@ public class PlayersListener implements Listener {
 	public void onPostLogin(PostLoginEvent event) {
 		BanData ban = Bans.getInstance().isBanned(
 			event.getPlayer().getUniqueId(),
-			event.getPlayer().getAddress().toString()
+			event.getPlayer().getAddress().getHostString()
 		);
 
 		if (ban != null) {
