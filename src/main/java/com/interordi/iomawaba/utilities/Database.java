@@ -339,7 +339,8 @@ public class Database {
 				query = "" +
 					"UPDATE io__bans " +
 					"SET active = 0, unban_date = ?, unban_by_uuid = ?, unban_by_name = ?, unban_reason = ? " +
-					"WHERE ip = ? ";
+					"WHERE ip = ? " + 
+					"  AND (unban_date > NOW() OR unban_date IS NULL) ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, clearTime.toString());
 				pstmt.setString(2, sSourceUuid);
@@ -356,7 +357,8 @@ public class Database {
 				query = "" +
 					"UPDATE io__bans " +
 					"SET active = 0, unban_date = ?, unban_by_uuid = ?, unban_by_name = ?, unban_reason = ? " +
-					"WHERE uuid = ? ";
+					"WHERE uuid = ? " + 
+					"  AND (unban_date > NOW() OR unban_date IS NULL) ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, clearTime.toString());
 				pstmt.setString(2, sSourceUuid);
@@ -373,6 +375,8 @@ public class Database {
 			logger.warning("SQLState: " + ex.getSQLState());
 			logger.warning("VendorError: " + ex.getErrorCode());
 		}
+
+		//TODO: Unban in cache
 
 		return true;
 	}
