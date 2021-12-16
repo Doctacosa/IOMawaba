@@ -44,7 +44,7 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 			
-			pstmt = conn.prepareStatement("" +
+			query = "" +
 				"CREATE TABLE IF NOT EXISTS `io__bans` ( " +
 				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
 				"  `uuid` varchar(36) NULL, " +
@@ -64,10 +64,11 @@ public class Database {
 				"  KEY `uuid` (`uuid`), " +
 				"  KEY `ip` (`ip`) " +
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8; "
-			);
+			;
+			pstmt = conn.prepareStatement(query);
 			pstmt.executeUpdate();
 			
-			pstmt = conn.prepareStatement("" +
+			query = "" +
 				"CREATE TABLE IF NOT EXISTS `io__warnings` ( " +
 				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
 				"  `uuid` varchar(36) NOT NULL, " +
@@ -78,7 +79,8 @@ public class Database {
 				"  PRIMARY KEY (`id`), " +
 				"  KEY `uuid` (`uuid`) " +
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8; "
-			);
+			;
+			pstmt = conn.prepareStatement(query);
 			pstmt.executeUpdate();
 			
 		} catch (SQLException ex) {
@@ -106,14 +108,14 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 			
-			pstmt = conn.prepareStatement("" +
+			query = "" +
 				"INSERT INTO `io__bans` (id, uuid, ip, by_name, reason, server, begin, end, active, unban_date, unban_by_name, unban_reason) " +
 				"( " +
 				"	SELECT ban_id, CONCAT(SUBSTRING(UUID, 1, 8), '-', SUBSTRING(UUID, 9, 4), '-', SUBSTRING(UUID, 13, 4), '-', SUBSTRING(UUID, 17, 4), '-', SUBSTRING(UUID, 21, 12)) AS uuid, ban_ip, ban_staff, ban_reason, ban_server, ban_begin, ban_end, ban_state, ban_unbandate, ban_unbanstaff, ban_unbanreason " +
 				"	FROM BAT_ban " +
 				")"
-			);
-
+			;
+			pstmt = conn.prepareStatement(query);
 			pstmt.executeUpdate();
 			
 		} catch (SQLException ex) {
@@ -140,12 +142,13 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 			
-			pstmt = conn.prepareStatement("" +
+			query = "" +
 				"SELECT message, date " + 
 				"FROM io__warnings " +
-				"WHERE player = ? " +
+				"WHERE uuid = ? " +
 				"  AND `date` >= ?"
-			);
+			;
+			pstmt = conn.prepareStatement(query);
 			
 			pstmt.setString(1, player.toString());
 			pstmt.setString(2, date.toString());
@@ -181,12 +184,13 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 			
-			pstmt = conn.prepareStatement("" +
+			query = "" +
 				"SELECT uuid, ip, reason, server, end, active " + 
 				"FROM io__bans " +
 				"WHERE unban_date IS NULL " +
 				"  AND (`end` < ? OR `end` IS NULL) "
-			);
+			;
+			pstmt = conn.prepareStatement(query);
 			
 			pstmt.setString(1, datetime.toString());
 			rs = pstmt.executeQuery();
