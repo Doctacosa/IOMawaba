@@ -242,6 +242,9 @@ public class Database {
 	public boolean logWarning(UUID uuid, UUID sourceUuid, String sourceName, String message) {
 		Connection conn = null;
 		String query = "";
+
+		if (message.length() > 100)
+			message = message.substring(0, 97) + "...";
 		
 		try {
 			conn = DriverManager.getConnection(database);
@@ -279,6 +282,9 @@ public class Database {
 	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
+		
+		if (message.length() > 100)
+			message = message.substring(0, 97) + "...";
 		
 		try {
 			conn = DriverManager.getConnection(database);
