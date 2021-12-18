@@ -23,7 +23,7 @@ public class Bans {
 
 	//Check if the given player is banned
 	public BanData isBanned(UUID uuid, String ip) {
-		return db.getBan(uuid, ip);
+		return db.getBan(uuid, ip, false);
 	}
 
 

@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -128,13 +127,13 @@ public class Database {
 	
 	
 	//Get the active warnings on a player
-	public Map< Instant, String > getWarnings(UUID player) {
+	public Map< LocalDateTime, String > getWarnings(UUID player) {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String query = "";
-		Map< Instant, String > warnings = new HashMap< Instant, String >();
+		Map< LocalDateTime, String > warnings = new HashMap< LocalDateTime, String >();
 
 		LocalDate date = LocalDate.now();
 		date = date.minusDays(180);
@@ -155,7 +154,10 @@ public class Database {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				Instant i = Instant.ofEpochSecond(rs.getLong("date"));
+				LocalDateTime i = LocalDateTime.parse(
+					rs.getString("date"),
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+				);
 				warnings.put(i, rs.getString("message"));
 			}
 			rs.close();
@@ -255,9 +257,9 @@ public class Database {
 				"VALUES (?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, sUuid);
-			pstmt.setString(2, message);
-			pstmt.setString(3, sSourceUuid);
-			pstmt.setString(4, sourceName);
+			pstmt.setString(2, sSourceUuid);
+			pstmt.setString(3, sourceName);
+			pstmt.setString(4, message);
 			pstmt.setString(5, date.toString());
 			pstmt.executeUpdate();
 
@@ -435,15 +437,73 @@ public class Database {
 
 
 	//Get a ban for this player, if set
-	public BanData getBan(UUID uuid, String ip) {
+	//NOTE: Using cache assumes that no other process can add or remove bans
+	//		Consider carefully before using
+	public BanData getBan(UUID uuid, String ip, boolean useCache) {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		for (BanData ban : bans) {
-			//TODO: Limit per server if wanted
-			if ((uuid.equals(ban.uuid) || ip.equals(ban.ip)) &&
-				(ban.end == null || ban.end.compareTo(now) > 0))
+		if (useCache) {
+			for (BanData ban : bans) {
+				//TODO: Limit per server if wanted
+				if ((uuid.equals(ban.uuid) || ip.equals(ban.ip)) &&
+					(ban.end == null || ban.end.compareTo(now) > 0))
+					return ban;
+			}
+		} else {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String query = "";
+			BanData ban = null;
+	
+			try {
+				conn = DriverManager.getConnection(database);
+				
+				query = "" +
+					"SELECT uuid, ip, reason, server, end, active " + 
+					"FROM io__bans " +
+					"WHERE unban_date IS NULL " +
+					"  AND (`end` > ? OR `end` IS NULL) " +
+					"  AND (uuid = ? OR ip = ?) "
+				;
+				pstmt = conn.prepareStatement(query);
+			
+				pstmt.setString(1, now.toString());
+				pstmt.setString(2, uuid.toString());
+				pstmt.setString(3, ip);
+
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					LocalDateTime endDate = null;
+	
+					if (rs.getString("end") != null) {
+						endDate = LocalDateTime.parse(
+							rs.getString("end"),
+							DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+						);
+					}
+	
+					ban = new BanData(
+						uuid,
+						null,
+						rs.getString("ip"),
+						rs.getString("reason"),
+						rs.getString("server"),
+						endDate
+					);
+				}
+				rs.close();
+				
 				return ban;
+			} catch (SQLException ex) {
+				// handle any errors
+				logger.warning("Query: " + query);
+				logger.warning("SQLException: " + ex.getMessage());
+				logger.warning("SQLState: " + ex.getSQLState());
+				logger.warning("VendorError: " + ex.getErrorCode());
+			}
 		}
 
 		return null;
