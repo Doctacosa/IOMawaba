@@ -51,6 +51,33 @@ public class Warnings {
 	}
 
 
+	//Try to clear a warning from the target player
+	public void clearWarning(String targetName, CommandSender sender) {
+		//Get the number of warnings on this user
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				UUID targetUuid = db.getUuidFromUsername(targetName);
+
+				if (targetUuid == null) {
+					sender.sendMessage(ChatColor.RED + "Target not found: " + targetName);
+					return;
+				}
+
+				final int nbWarnings = plugin.db.getWarnings(targetUuid).size();
+
+				if (nbWarnings == 0) {
+					sender.sendMessage(ChatColor.RED + "This player doesn't have any active warnings.");
+					return;
+				}
+
+				plugin.db.clearWarning(targetUuid);
+				sender.sendMessage(ChatColor.GREEN + "One warning removed from " + targetName + ", " + (nbWarnings - 1) + " still active.");
+			}
+		});
+	}
+
+
 	//Act based on the number of warnings received
 	//nbWarnings represent the number of warnings already received
 	public void actOnWarning(Player target, CommandSender sender, final String message, int nbWarnings) {

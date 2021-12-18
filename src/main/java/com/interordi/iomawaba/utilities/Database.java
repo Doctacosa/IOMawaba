@@ -278,6 +278,36 @@ public class Database {
 	}
 	
 	
+	//Remove a warning from a player
+	public boolean clearWarning(UUID uuid) {
+		Connection conn = null;
+		String query = "";
+
+		try {
+			conn = DriverManager.getConnection(database);
+
+			//Record today's visit
+			query = "" +
+				"DELETE FROM io__warnings " +
+				"WHERE uuid = ? " +
+				"ORDER BY `date` DESC " +
+				"LIMIT 1 ";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, uuid.toString());
+			pstmt.executeUpdate();
+
+		} catch (SQLException ex) {
+			// handle any errors
+			logger.warning("Query: " + query);
+			logger.warning("SQLException: " + ex.getMessage());
+			logger.warning("SQLState: " + ex.getSQLState());
+			logger.warning("VendorError: " + ex.getErrorCode());
+		}
+
+		return true;
+	}
+	
+	
 	//Ban a target
 	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;

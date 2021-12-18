@@ -108,18 +108,27 @@ public class IOMawabaSpigot extends JavaPlugin {
 				sender.sendMessage(ChatColor.RED + "Missing parameter: player name");
 				return true;
 			}
-			target = getServer().getPlayer(playerName);
 
-			if (target == null) {
-				sender.sendMessage(ChatColor.RED + "Target not found: " + playerName);
-				return true;
+			if (args.length >= 2 &&
+				(args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("clean"))) {
+				
+				warnings.clearWarning(playerName, sender);
+			
+			} else {
+
+				target = getServer().getPlayer(playerName);
+
+				if (target == null) {
+					sender.sendMessage(ChatColor.RED + "Target not found: " + playerName);
+					return true;
+				}
+
+				String message = "";
+				if (args.length > 1)
+					message += StringUtils.strJoin(args, " ", 1);
+		
+				warnings.giveWarning(target, sender, message);
 			}
-
-			String message = "";
-			if (args.length > 1)
-				message += StringUtils.strJoin(args, " ", 1);
-	
-			warnings.giveWarning(target, sender, message);
 
 			return true;
 		}
