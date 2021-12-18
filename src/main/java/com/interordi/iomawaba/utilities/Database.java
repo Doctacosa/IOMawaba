@@ -243,7 +243,7 @@ public class Database {
 		Connection conn = null;
 		String query = "";
 
-		if (message.length() > 100)
+		if (message != null && message.length() > 100)
 			message = message.substring(0, 97) + "...";
 		
 		try {
@@ -283,7 +283,7 @@ public class Database {
 		Connection conn = null;
 		String query = "";
 		
-		if (message.length() > 100)
+		if (message != null && message.length() > 100)
 			message = message.substring(0, 97) + "...";
 		
 		try {
