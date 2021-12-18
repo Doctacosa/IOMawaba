@@ -67,7 +67,11 @@ public class Warnings {
 		}
 		final UUID finalSenderUuid = senderUuid;
 
-		if (nbWarnings >= 3) {
+		if (nbWarnings > 3) {
+			//Permanent ban
+			ban = 999;
+
+		} else if (nbWarnings == 3) {
 			//Ban for 30d
 			ban = 30;
 
@@ -117,17 +121,34 @@ public class Warnings {
 			}, 10 * 20L);
 		}
 
+		final String logMessage;
+		if (message.equals(defaultMessage))
+			logMessage = null;
+		else
+			logMessage = message;
+
 		//Ban if requested
 		if (ban > 0) {
-			target.kickPlayer("You have been banned for " + ban + " days: " + message);
-			Bukkit.getServer().getLogger().info("|IOBAN|" + target.getDisplayName() + " was banned (" + ban + "): " + message);
-			
-			LocalDateTime endTime = LocalDateTime.now().plusDays(ban);
+			String playerMessage;
+			String serverMessage;
+			LocalDateTime endTime = null;
 
+			if (ban == 999) {
+				playerMessage = "You have been permanently banned: " + logMessage;
+				serverMessage = target.getDisplayName() + " was permanently banned: " + logMessage;
+			} else {
+				playerMessage = "You have been banned for " + ban + " days: " + logMessage;
+				serverMessage = target.getDisplayName() + " was banned for " + ban + " days: " + logMessage;
+				endTime = LocalDateTime.now().plusDays(ban);
+			}
+			target.kickPlayer(playerMessage);
+			Bukkit.getServer().getLogger().info("|IOBAN|" + serverMessage);
+			
+			final LocalDateTime finalEndTime = endTime;
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {
-					plugin.db.banTarget(target.getUniqueId(), target.getName(), null, finalSenderUuid, sender.getName(), null, endTime, message);
+					plugin.db.banTarget(target.getUniqueId(), target.getName(), null, finalSenderUuid, sender.getName(), null, finalEndTime, logMessage);
 				}
 			});
 		}
@@ -136,7 +157,7 @@ public class Warnings {
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			@Override
 			public void run() {
-				plugin.db.logWarning(target.getUniqueId(), finalSenderUuid, sender.getName(), message);
+				plugin.db.logWarning(target.getUniqueId(), finalSenderUuid, sender.getName(), logMessage);
 			}
 		});
 
