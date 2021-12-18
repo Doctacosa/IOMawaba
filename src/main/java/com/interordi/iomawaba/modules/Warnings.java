@@ -130,7 +130,7 @@ public class Warnings {
 
 		//Send the warning to the player
 		target.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + message);
-		target.sendTitle(title, subtitle, 10, 100, 10);
+		target.sendTitle(title, subtitle, 10, 200, 10);
 
 		//Notify the sender
 		sender.sendMessage(ChatColor.GREEN + "Warning sent to " + target.getDisplayName() + ".");
