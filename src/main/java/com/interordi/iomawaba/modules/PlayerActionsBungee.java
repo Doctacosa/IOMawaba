@@ -58,6 +58,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
 	}
@@ -75,6 +76,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		}
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
 	}
@@ -93,6 +95,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
 	}
@@ -110,6 +113,7 @@ public class PlayerActionsBungee implements PlayerActions {
 		}
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 		
 		return true;
 	}

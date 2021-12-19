@@ -150,7 +150,7 @@ public class Warnings {
 
 		final String logMessage;
 		if (message.equals(defaultMessage))
-			logMessage = null;
+			logMessage = "No griefing.";
 		else
 			logMessage = message;
 
@@ -165,7 +165,7 @@ public class Warnings {
 				serverMessage = target.getDisplayName() + " was permanently banned: " + logMessage;
 			} else {
 				playerMessage = "You have been banned for " + ban + " days: " + logMessage;
-				serverMessage = target.getDisplayName() + " was banned for " + ban + " days: " + logMessage;
+				serverMessage = target.getDisplayName() + " was banned (" + ban + " days): " + logMessage;
 				endTime = LocalDateTime.now().plusDays(ban);
 			}
 			target.kickPlayer(playerMessage);

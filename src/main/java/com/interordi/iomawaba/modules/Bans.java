@@ -35,7 +35,7 @@ public class Bans {
 		else
 			message += "You have been permanently banned: ";
 
-		if (!ban.reason.isEmpty())
+		if (ban.reason != null && !ban.reason.isEmpty())
 			message += ban.reason;
 		else
 			message += "No reason was specified";
@@ -57,9 +57,9 @@ public class Bans {
 
 		String message = "";
 		if (ban.end != null)
-			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": ";
+			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": " + ban.reason;
 		else
-			message += target + " has been permanently banned: ";
+			message += target + " has been permanently banned: " + ban.reason;
 
 		if (ban.reason.isEmpty())
 			message += "No reason was specifi4ed";
