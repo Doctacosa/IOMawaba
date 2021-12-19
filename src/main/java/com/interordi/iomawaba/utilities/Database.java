@@ -201,8 +201,6 @@ public class Database {
 				UUID uuid = null;
 				LocalDateTime endDate = null;
 
-				System.out.println("Read UUID: " + rs.getString("uuid"));
-
 				if (rs.getString("uuid") != null && !rs.getString("uuid").isEmpty()) {
 					uuid = UUID.fromString(rs.getString("uuid"));
 				}
