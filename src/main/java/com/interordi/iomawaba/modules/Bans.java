@@ -62,7 +62,7 @@ public class Bans {
 			message += target + " has been permanently banned: " + ban.reason;
 
 		if (ban.reason.isEmpty())
-			message += "No reason was specifi4ed";
+			message += "No reason was specified";
 		
 		return message;
 	}
@@ -74,7 +74,7 @@ public class Bans {
 
 		//Suffixes: y for years, mo for months, w for week, d for day, h for hour, m for minute and s for second
 
-		Pattern r = Pattern.compile("([0-9]*)([a-zA-Z])");
+		Pattern r = Pattern.compile("([0-9]*)([a-zA-Z]+)");
 		Matcher m = r.matcher(arg);
 
 		while (m.find()) {
@@ -90,24 +90,38 @@ public class Bans {
 
 			switch (unit) {
 				case "y":
+				case "year":
+				case "years":
 					end = end.plusYears(value);
 					break;
 				case "mo":
+				case "month":
+				case "months":
 					end = end.plusMonths(value);
 					break;
 				case "w":
+				case "week":
+				case "weeks":
 					end = end.plusWeeks(value);
 					break;
 				case "d":
+				case "day":
+				case "days":
 					end = end.plusDays(value);
 					break;
 				case "h":
+				case "hour":
+				case "hours":
 					end = end.plusHours(value);
 					break;
 				case "m":
+				case "minute":
+				case "minutes":
 					end = end.plusMinutes(value);
 					break;
 				case "s":
+				case "second":
+				case "seconds":
 					end = end.plusSeconds(value);
 					break;
 				default:
