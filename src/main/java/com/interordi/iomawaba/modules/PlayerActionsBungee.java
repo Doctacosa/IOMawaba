@@ -47,15 +47,16 @@ public class PlayerActionsBungee implements PlayerActions {
 
 	@Override
 	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+		//target can be null if the player is offline
+		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target == null) {
-			//Return to sender
-			return false;
-		}
+		if (target != null)
+			targetUuid = target.getUniqueId();
 
-		BanData ban = db.banTarget(target.getUniqueId(), player, null, sourceUuid, sourceName, null, endTime, message);
+		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, endTime, message);
 
-		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
+		if (target != null)
+			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
@@ -84,15 +85,15 @@ public class PlayerActionsBungee implements PlayerActions {
 
 	@Override
 	public boolean banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target == null) {
-			//Return to sender
-			return false;
-		}
+		if (target != null)
+			targetUuid = target.getUniqueId();
 
-		BanData ban = db.banTarget(target.getUniqueId(), player, null, sourceUuid, sourceName, null, null, message);
+		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, null, message);
 
-		target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
+		if (target != null)
+			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
 		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));

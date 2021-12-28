@@ -310,6 +310,10 @@ public class Database {
 	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
+
+		if (targetUuid == null && targetName != null) {
+			targetUuid = getUuidFromUsername(targetName);
+		}
 		
 		if (message != null && message.length() > 100)
 			message = message.substring(0, 97) + "...";
