@@ -57,7 +57,7 @@ public class Bans {
 
 		String message = "";
 		if (ban.end != null)
-			message += target + " has been banned until: " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": " + ban.reason;
+			message += target + " has been banned until " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": " + ban.reason;
 		else
 			message += target + " has been permanently banned: " + ban.reason;
 
