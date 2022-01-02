@@ -4,3 +4,6 @@ database:
   base: minecraft
   username: root
   password: 
+
+bungee:
+  use-broadcast: true

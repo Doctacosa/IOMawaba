@@ -17,6 +17,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public class PlayerActionsBungee implements PlayerActions {
 
 	Database db;
+	boolean useBroadcast = true;
 	
 
 	public PlayerActionsBungee(Database db) {
@@ -58,7 +59,8 @@ public class PlayerActionsBungee implements PlayerActions {
 		if (target != null)
 			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
-		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		if (useBroadcast)
+			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
@@ -76,7 +78,8 @@ public class PlayerActionsBungee implements PlayerActions {
 			}
 		}
 
-		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		if (useBroadcast)
+			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
@@ -95,7 +98,8 @@ public class PlayerActionsBungee implements PlayerActions {
 		if (target != null)
 			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 
-		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		if (useBroadcast)
+			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
 		return true;
@@ -113,7 +117,8 @@ public class PlayerActionsBungee implements PlayerActions {
 			}
 		}
 
-		ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
+		if (useBroadcast)
+			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 		
 		return true;
@@ -155,6 +160,12 @@ public class PlayerActionsBungee implements PlayerActions {
 			source.sendMessage(new ComponentBuilder("The IP address " + ip + " has not been found.").color(ChatColor.RED).create());
 
 		return result;
+	}
+
+
+	@Override
+	public void useBroadcast(boolean setting) {
+		this.useBroadcast = setting;
 	}
 	
 }

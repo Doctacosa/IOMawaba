@@ -18,4 +18,6 @@ public interface PlayerActions {
 	abstract boolean unbanPlayer(String player, UUID sourceUuid, String sourceName, String message);
 	abstract boolean unbanIp(String ip, UUID sourceUuid, String sourceName, String message);
 	
+	//Settings
+	abstract void useBroadcast(boolean setting);
 }

@@ -81,7 +81,10 @@ public class IOMawabaBungee extends Plugin {
 			return;
 		}
 
+		boolean bungeeUserBroadcast = configuration.getBoolean("bungee.use-broadcast", true);
+
 		PlayerActions actions = new PlayerActionsBungee(db);
+		actions.useBroadcast(bungeeUserBroadcast);
 
 		getProxy().getPluginManager().registerListener(this, new PlayersListener());
 

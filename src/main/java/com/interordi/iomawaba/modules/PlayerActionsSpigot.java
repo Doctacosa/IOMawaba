@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public class PlayerActionsSpigot implements PlayerActions {
 
 	Database db;
+	boolean useBroadcast = true;
 	
 
 	public PlayerActionsSpigot(Database db) {
@@ -89,6 +90,12 @@ public class PlayerActionsSpigot implements PlayerActions {
 	public boolean unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public void useBroadcast(boolean setting) {
+		this.useBroadcast = setting;
 	}
 	
 }
