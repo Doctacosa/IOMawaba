@@ -330,17 +330,18 @@ public class Database {
 			
 			//Record today's visit
 			query = "" +
-				"INSERT INTO io__bans (uuid, by_uuid, by_name, reason, server, begin, end, active) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
+				"INSERT INTO io__bans (uuid, ip, by_uuid, by_name, reason, server, begin, end, active) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, sTargetUuid);
-			pstmt.setString(2, sSourceUuid);
-			pstmt.setString(3, sourceName);
-			pstmt.setString(4, message);
-			pstmt.setString(5, server);
-			pstmt.setString(6, sStartTime);
-			pstmt.setString(7, sEndTime);
-			pstmt.setInt(8, 1);
+			pstmt.setString(2, ip);
+			pstmt.setString(3, sSourceUuid);
+			pstmt.setString(4, sourceName);
+			pstmt.setString(5, message);
+			pstmt.setString(6, server);
+			pstmt.setString(7, sStartTime);
+			pstmt.setString(8, sEndTime);
+			pstmt.setInt(9, 1);
 			pstmt.executeUpdate();
 
 		} catch (SQLException ex) {
