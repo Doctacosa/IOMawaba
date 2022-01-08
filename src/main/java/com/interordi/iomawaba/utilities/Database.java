@@ -155,7 +155,7 @@ public class Database {
 			
 			while (rs.next()) {
 				LocalDateTime i = LocalDateTime.parse(
-					rs.getString("date"),
+					rs.getString("date").substring(0, 19),
 					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 				);
 				warnings.put(i, rs.getString("message"));
@@ -207,7 +207,7 @@ public class Database {
 				
 				if (rs.getString("end") != null) {
 					endDate = LocalDateTime.parse(
-						rs.getString("end"),
+						rs.getString("end").substring(0, 19),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 					);
 				}
@@ -519,7 +519,7 @@ public class Database {
 	
 					if (rs.getString("end") != null) {
 						endDate = LocalDateTime.parse(
-							rs.getString("end"),
+							rs.getString("end").substring(0, 19),
 							DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 						);
 					}
