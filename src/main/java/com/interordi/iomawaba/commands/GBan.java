@@ -56,6 +56,9 @@ public class GBan extends Command {
 		if (result == ControlCode.IS_ADMIN) {
 			sender.sendMessage(new ComponentBuilder("You can't target other staff.").color(ChatColor.RED).create());
 		
+		} else if (result == ControlCode.ALREADY_BANNED) {
+			sender.sendMessage(new ComponentBuilder(targetRaw + " is already banned.").color(ChatColor.RED).create());
+
 		} else if (result == ControlCode.SUCCESS) {
 			sender.sendMessage(new ComponentBuilder("Operation successful.").color(ChatColor.GREEN).create());
 

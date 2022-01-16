@@ -7,5 +7,6 @@ public enum ControlCode {
 	IS_ADMIN,
 	NOT_FOUND,
 	NOT_ONLINE,
+	ALREADY_BANNED,
 	
 }

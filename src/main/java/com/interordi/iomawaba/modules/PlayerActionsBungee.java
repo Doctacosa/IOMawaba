@@ -57,9 +57,24 @@ public class PlayerActionsBungee implements PlayerActions {
 		
 			if (target.hasPermission("iomawaba.admin"))
 				return ControlCode.IS_ADMIN;
+		} else {
+			targetUuid = db.getUuidFromUsername(player);
 		}
 
-		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, endTime, message);
+		//Check for existing bans first
+		BanData ban;
+		if (targetUuid != null) {
+			ban = db.getBan(targetUuid, null, false);
+			if (ban != null) {
+				//Ignore already banned, remove temps to use the new duration
+				if (ban.end == null)
+					return ControlCode.ALREADY_BANNED;
+				else
+					db.unbanTarget(targetUuid, player, null, sourceUuid, sourceName, null, message);
+			}
+		}
+
+		ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, endTime, message);
 
 		if (target != null)
 			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
@@ -75,7 +90,16 @@ public class PlayerActionsBungee implements PlayerActions {
 	@Override
 	public ControlCode tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 
-		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
+		BanData ban = db.getBan(null, ip, false);
+		if (ban != null) {
+			//Ignore already banned, remove temps to use the new duration
+			if (ban.end == null)
+				return ControlCode.ALREADY_BANNED;
+			else
+				db.unbanTarget(null, null, ip, sourceUuid, sourceName, null, message);
+		}
+
+		ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
 			if (ip.equals(player.getAddress().getHostString()) &&
@@ -96,13 +120,29 @@ public class PlayerActionsBungee implements PlayerActions {
 	public ControlCode banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target != null)
+		if (target != null) {
 			targetUuid = target.getUniqueId();
 		
-		if (target.hasPermission("iomawaba.admin"))
-			return ControlCode.IS_ADMIN;
+			if (target.hasPermission("iomawaba.admin"))
+				return ControlCode.IS_ADMIN;
+		} else {
+			targetUuid = db.getUuidFromUsername(player);
+		}
 
-		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, null, message);
+		//Check for existing bans first
+		BanData ban;
+		if (targetUuid != null) {
+			ban = db.getBan(targetUuid, null, false);
+			if (ban != null) {
+				//Ignore already banned, remove temps to "promote" them to permanent
+				if (ban.end == null)
+					return ControlCode.ALREADY_BANNED;
+				else
+					db.unbanTarget(targetUuid, player, null, sourceUuid, sourceName, null, message);
+			}
+		}
+
+		ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, null, message);
 
 		if (target != null)
 			target.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
@@ -118,7 +158,16 @@ public class PlayerActionsBungee implements PlayerActions {
 	@Override
 	public ControlCode banIp(String ip, UUID sourceUuid, String sourceName, String message) {
 
-		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, null, message);
+		BanData ban = db.getBan(null, ip, false);
+		if (ban != null) {
+			//Ignore already banned, remove temps to "promote" them to permanent
+			if (ban.end == null)
+				return ControlCode.ALREADY_BANNED;
+			else
+				db.unbanTarget(null, null, ip, sourceUuid, sourceName, null, message);
+		}
+
+		ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, null, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
 			if (ip.equals(player.getAddress().getHostString()) &&
