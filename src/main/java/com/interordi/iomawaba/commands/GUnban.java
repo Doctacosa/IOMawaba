@@ -3,6 +3,7 @@ package com.interordi.iomawaba.commands;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -47,9 +48,12 @@ public class GUnban extends Command {
 			message += StringUtils.strJoin(args, " ", 1);
 
 
-		boolean result = actions.unbanPlayer(targetRaw, senderUuid, sender.getName(), message);
+		ControlCode result = actions.unbanPlayer(targetRaw, senderUuid, sender.getName(), message);
 
-		if (!result) {
+		if (result == ControlCode.SUCCESS) {
+			sender.sendMessage(new ComponentBuilder("Player " + targetRaw + " has been unbanned.").color(ChatColor.GREEN).create());
+		
+		} else if (result == ControlCode.NOT_FOUND) {
 			sender.sendMessage(new ComponentBuilder(targetRaw + " is not banned!").color(ChatColor.RED).create());
 		}
 		

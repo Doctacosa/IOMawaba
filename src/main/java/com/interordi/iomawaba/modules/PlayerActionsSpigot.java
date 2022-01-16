@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.Database;
 
 import org.bukkit.Bukkit;
@@ -21,75 +22,74 @@ public class PlayerActionsSpigot implements PlayerActions {
 
 
 	@Override
-	public boolean warnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode warnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		//NOTE: Called directly for now, only available at the server level
 		//Warnings.giveWarning(player, message);
 
 		Player target = Bukkit.getServer().getPlayer(player);
 		if (target == null) {
-			//Return to sender
-			return false;
+			return ControlCode.ERROR;
 		}
 
 		db.logWarning(target.getUniqueId(), sourceUuid, sourceName, message);
 
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean kickPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode kickPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean banIp(String ip, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode banIp(String ip, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean unwarnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unwarnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 	
 
 	@Override
-	public boolean unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
 		// TODO Auto-generated method stub
-		return false;
+		return ControlCode.ERROR;
 	}
 
 

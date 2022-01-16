@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.modules.Bans;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -55,7 +56,12 @@ public class GTempBanIp extends Command {
 			message += StringUtils.strJoin(args, " ", 2);
 
 
-		boolean result = actions.tempBanIp(targetIp, senderUuid, sender.getName(), endTime, message);
+		ControlCode result = actions.tempBanIp(targetIp, senderUuid, sender.getName(), endTime, message);
+
+		if (result == ControlCode.SUCCESS) {
+			sender.sendMessage(new ComponentBuilder("Operation successful.").color(ChatColor.GREEN).create());
+
+		}
 
 	}
 	

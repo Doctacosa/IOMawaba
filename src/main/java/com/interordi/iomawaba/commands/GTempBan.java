@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.modules.Bans;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -55,10 +56,17 @@ public class GTempBan extends Command {
 			message += StringUtils.strJoin(args, " ", 2);
 
 
-		boolean result = actions.tempBanPlayer(targetRaw, senderUuid, sender.getName(), endTime, message);
+		ControlCode result = actions.tempBanPlayer(targetRaw, senderUuid, sender.getName(), endTime, message);
 
-		if (!result) {
+		if (result == ControlCode.ERROR) {
 			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
+
+		} else if (result == ControlCode.IS_ADMIN) {
+			sender.sendMessage(new ComponentBuilder("You can't target other staff.").color(ChatColor.RED).create());
+		
+		} else if (result == ControlCode.SUCCESS) {
+			sender.sendMessage(new ComponentBuilder("Operation successful.").color(ChatColor.GREEN).create());
+
 		}
 		
 	}

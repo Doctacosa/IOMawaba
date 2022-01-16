@@ -3,6 +3,7 @@ package com.interordi.iomawaba.commands;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -47,10 +48,13 @@ public class GBanIp extends Command {
 			message += StringUtils.strJoin(args, " ", 1);
 
 
-		boolean result = actions.banIp(targetRaw, senderUuid, sender.getName(), message);
+		ControlCode result = actions.banIp(targetRaw, senderUuid, sender.getName(), message);
 
-		if (!result) {
-			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
+		if (result == ControlCode.SUCCESS) {
+			sender.sendMessage(new ComponentBuilder("The IP address " + targetRaw + " has been unbanned.").color(ChatColor.GREEN).create());
+
+		} else if (result == ControlCode.ERROR) {
+			sender.sendMessage(new ComponentBuilder("An unknown error occurred.").color(ChatColor.RED).create());
 		}
 		
 	}

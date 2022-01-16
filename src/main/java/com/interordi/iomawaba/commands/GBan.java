@@ -3,6 +3,7 @@ package com.interordi.iomawaba.commands;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
@@ -49,10 +50,15 @@ public class GBan extends Command {
 			message += "No reason was specified";
 
 
-		boolean result = actions.banPlayer(targetRaw, senderUuid, sender.getName(), message);
+		ControlCode result = actions.banPlayer(targetRaw, senderUuid, sender.getName(), message);
 
-		if (!result) {
-			sender.sendMessage(new ComponentBuilder(targetRaw + " is not online!").color(ChatColor.RED).create());
+
+		if (result == ControlCode.IS_ADMIN) {
+			sender.sendMessage(new ComponentBuilder("You can't target other staff.").color(ChatColor.RED).create());
+		
+		} else if (result == ControlCode.SUCCESS) {
+			sender.sendMessage(new ComponentBuilder("Operation successful.").color(ChatColor.GREEN).create());
+
 		}
 		
 	}

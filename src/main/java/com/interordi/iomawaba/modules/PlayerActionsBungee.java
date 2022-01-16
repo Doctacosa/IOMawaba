@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.utilities.BanData;
+import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.Database;
 
 import net.md_5.bungee.api.ChatColor;
@@ -26,33 +27,37 @@ public class PlayerActionsBungee implements PlayerActions {
 
 
 	@Override
-	public boolean warnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode warnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		ProxyServer.getInstance().getLogger().warning("The warnings aren't defined at the proxy level.");
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean kickPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode kickPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target == null) {
-			//Return to sender
-			return false;
-		}
+		if (target == null)
+			return ControlCode.NOT_FOUND;
+		else if (target.hasPermission("iomawaba.admin"))
+			return ControlCode.IS_ADMIN;
 
 		target.disconnect(new ComponentBuilder(message).create());
 		
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 		//target can be null if the player is offline
 		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
-		if (target != null)
+		if (target != null) {
 			targetUuid = target.getUniqueId();
+		
+			if (target.hasPermission("iomawaba.admin"))
+				return ControlCode.IS_ADMIN;
+		}
 
 		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, endTime, message);
 
@@ -63,17 +68,18 @@ public class PlayerActionsBungee implements PlayerActions {
 			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
 
 		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, endTime, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			if (ip.equals(player.getAddress().getHostString())) {
+			if (ip.equals(player.getAddress().getHostString()) &&
+				!player.hasPermission("iomawaba.admin")) {
 				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
@@ -82,16 +88,19 @@ public class PlayerActionsBungee implements PlayerActions {
 			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode banPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
 		if (target != null)
 			targetUuid = target.getUniqueId();
+		
+		if (target.hasPermission("iomawaba.admin"))
+			return ControlCode.IS_ADMIN;
 
 		BanData ban = db.banTarget(targetUuid, player, null, sourceUuid, sourceName, null, null, message);
 
@@ -102,17 +111,18 @@ public class PlayerActionsBungee implements PlayerActions {
 			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean banIp(String ip, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode banIp(String ip, UUID sourceUuid, String sourceName, String message) {
 
 		BanData ban = db.banTarget(null, null, ip, sourceUuid, sourceName, null, null, message);
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			if (ip.equals(player.getAddress().getHostString())) {
+			if (ip.equals(player.getAddress().getHostString()) &&
+				!player.hasPermission("iomawaba.admin")) {
 				player.disconnect(new TextComponent(Bans.formatMessageTarget(ban)));
 			}
 		}
@@ -121,19 +131,19 @@ public class PlayerActionsBungee implements PlayerActions {
 			ProxyServer.getInstance().broadcast(new TextComponent(Bans.formatMessageGlobal(ban)));
 		ProxyServer.getInstance().getLogger().info("|IOBAN|" + Bans.formatMessageGlobal(ban));
 		
-		return true;
+		return ControlCode.SUCCESS;
 	}
 
 
 	@Override
-	public boolean unwarnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unwarnPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		//TODO: Not implemented at the proxy level
-		return false;
+		return ControlCode.ERROR;
 	}
 
 
 	@Override
-	public boolean unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unbanPlayer(String player, UUID sourceUuid, String sourceName, String message) {
 		boolean result = db.unbanTarget(null, player, null, sourceUuid, sourceName, null, message);
 
 		CommandSender source = ProxyServer.getInstance().getPlayer(sourceUuid);
@@ -141,25 +151,20 @@ public class PlayerActionsBungee implements PlayerActions {
 			source = ProxyServer.getInstance().getConsole();
 
 		if (result)
-			source.sendMessage(new ComponentBuilder("Player " + player + " has been unbanned.").color(ChatColor.GREEN).create());
+			return ControlCode.SUCCESS;
 		else
-			source.sendMessage(new ComponentBuilder("Player " + player + " has not been found.").color(ChatColor.RED).create());
-
-		return result;
+			return ControlCode.NOT_FOUND;
 	}
 
 
 	@Override
-	public boolean unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
+	public ControlCode unbanIp(String ip, UUID sourceUuid, String sourceName, String message) {
 		boolean result = db.unbanTarget(null, null, ip, sourceUuid, sourceName, null, message);
 
-		ProxiedPlayer source = ProxyServer.getInstance().getPlayer(sourceUuid);
 		if (result)
-			source.sendMessage(new ComponentBuilder("The IP address " + ip + " has been unbanned.").color(ChatColor.GREEN).create());
+			return ControlCode.SUCCESS;
 		else
-			source.sendMessage(new ComponentBuilder("The IP address " + ip + " has not been found.").color(ChatColor.RED).create());
-
-		return result;
+			return ControlCode.NOT_FOUND;
 	}
 
 
