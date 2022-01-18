@@ -95,11 +95,14 @@ public class Bans {
 					end = end.plusYears(value);
 					break;
 				case "mo":
+				case "mth":
 				case "month":
 				case "months":
 					end = end.plusMonths(value);
 					break;
 				case "w":
+				case "wk":
+				case "wks":
 				case "week":
 				case "weeks":
 					end = end.plusWeeks(value);
@@ -110,16 +113,22 @@ public class Bans {
 					end = end.plusDays(value);
 					break;
 				case "h":
+				case "hr":
+				case "hrs":
 				case "hour":
 				case "hours":
 					end = end.plusHours(value);
 					break;
 				case "m":
+				case "min":
+				case "mins":
 				case "minute":
 				case "minutes":
 					end = end.plusMinutes(value);
 					break;
 				case "s":
+				case "sec":
+				case "secs":
 				case "second":
 				case "seconds":
 					end = end.plusSeconds(value);
