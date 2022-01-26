@@ -51,7 +51,7 @@ public class GBanIp extends Command {
 		ControlCode result = actions.banIp(targetRaw, senderUuid, sender.getName(), message);
 
 		if (result == ControlCode.SUCCESS) {
-			sender.sendMessage(new ComponentBuilder("The IP address " + targetRaw + " has been unbanned.").color(ChatColor.GREEN).create());
+			sender.sendMessage(new ComponentBuilder("The IP address " + targetRaw + " has been banned.").color(ChatColor.GREEN).create());
 
 		} else if (result == ControlCode.ALREADY_BANNED) {
 			sender.sendMessage(new ComponentBuilder(targetRaw + " is already banned.").color(ChatColor.RED).create());
