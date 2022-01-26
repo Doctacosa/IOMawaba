@@ -499,18 +499,32 @@ public class Database {
 			try {
 				conn = DriverManager.getConnection(database);
 				
-				query = "" +
-					"SELECT uuid, ip, reason, server, end, active " + 
-					"FROM io__bans " +
-					"WHERE unban_date IS NULL " +
-					"  AND (`end` > ? OR `end` IS NULL) " +
-					"  AND (uuid = ? OR ip = ?) "
-				;
-				pstmt = conn.prepareStatement(query);
-			
-				pstmt.setString(1, now.toString());
-				pstmt.setString(2, uuid.toString());
-				pstmt.setString(3, ip);
+				if (uuid != null) {
+					query = "" +
+						"SELECT uuid, ip, reason, server, end, active " + 
+						"FROM io__bans " +
+						"WHERE unban_date IS NULL " +
+						"  AND (`end` > ? OR `end` IS NULL) " +
+						"  AND (uuid = ? OR ip = ?) "
+					;
+					pstmt = conn.prepareStatement(query);
+				
+					pstmt.setString(1, now.toString());
+					pstmt.setString(2, uuid.toString());
+					pstmt.setString(3, ip);
+				} else {
+					query = "" +
+						"SELECT uuid, ip, reason, server, end, active " + 
+						"FROM io__bans " +
+						"WHERE unban_date IS NULL " +
+						"  AND (`end` > ? OR `end` IS NULL) " +
+						"  AND ip = ? "
+					;
+					pstmt = conn.prepareStatement(query);
+				
+					pstmt.setString(1, now.toString());
+					pstmt.setString(2, ip);
+				}
 
 				rs = pstmt.executeQuery();
 				
