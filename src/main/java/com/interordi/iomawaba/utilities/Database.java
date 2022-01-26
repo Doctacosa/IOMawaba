@@ -426,7 +426,7 @@ public class Database {
 		bansCopy.addAll(bans);
 		for (BanData ban : bansCopy) {
 			if (ip != null && ip.equals(ban.ip) ||
-				(targetUuid.equals(ban.uuid))) {
+				(targetUuid != null && targetUuid.equals(ban.uuid))) {
 				
 				bans.remove(ban);
 			}
