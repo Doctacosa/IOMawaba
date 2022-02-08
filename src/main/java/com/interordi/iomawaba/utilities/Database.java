@@ -437,7 +437,7 @@ public class Database {
 
 
 	//Get the UUID for the given username
-	//TODO: Consider using another source, or a Mojang lookup
+	//TODO: Another source (Mojang lookup?) required if the player has never joined
 	public UUID getUuidFromUsername(String username) {
 
 		Connection conn = null;
