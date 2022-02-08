@@ -86,7 +86,9 @@ public class IOMawabaBungee extends Plugin {
 		PlayerActions actions = new PlayerActionsBungee(db);
 		actions.useBroadcast(bungeeUserBroadcast);
 
-		getProxy().getPluginManager().registerListener(this, new PlayersListener());
+		PlayersListener pl = new PlayersListener();
+		pl.setDatabase(db);
+		getProxy().getPluginManager().registerListener(this, pl);
 
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GKick(actions));
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new GTempBan(actions));

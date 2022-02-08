@@ -475,6 +475,34 @@ public class Database {
 	}
 
 
+	//Record a player entry
+	public void savePlayerRecord(UUID uuid, String name, String ip) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String query = "";
+		
+		try {
+			conn = DriverManager.getConnection(database);
+			
+			query = "" +
+				"REPLACE INTO `stats_io_players` (uuid, name, ip) " +
+				"VALUES (?, ?, ?) "
+			;
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, uuid.toString());
+			pstmt.setString(2, name);
+			pstmt.setString(3, ip);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException ex) {
+			System.err.println("Query: " + query);
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+
+
 	//Get a ban for this player, if set
 	//NOTE: Using cache assumes that no other process can add or remove bans
 	//		Consider carefully before using
