@@ -52,6 +52,7 @@ public class PlayersListener implements Listener {
 	@EventHandler
 	public void onServerConnectEvent(ServerConnectEvent event) {
 		//TODO: Server-specific check
+		//System.out.println("Trying to join " + event.getTarget().getName());
 	}
 
 
