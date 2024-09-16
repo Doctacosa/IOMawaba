@@ -15,7 +15,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Warnings {
 
-	private String defaultMessage = "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
+	private String defaultMessage1 = "Hi there! I'm issuing you an official warning as I've noticed you have been griefing, which isn't tolerated here. Please don't break, take or change anything that belongs to someone else unless you get their permission first.";
+	private String defaultMessage2 = "No griefing will be tolerated. Griefing is breaking or taking anything that belongs to someone else, or adding to a structure that isn't yours, without permission.";
+	private String defaultMessage3 = "Griefing is not tolerated. Stop now.";
 
 	private IOMawabaSpigot plugin;
 	private Database db;
@@ -29,16 +31,24 @@ public class Warnings {
 
 	public void giveWarning(Player target, CommandSender sender, String message) {
 
-		if (message == null || message.length() == 0)
-			message = defaultMessage;
-
-		final String finalMessage = message;
-
 		//Get the number of warnings on this user
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			@Override
 			public void run() {
 				final int nbWarnings = plugin.db.getWarnings(target.getUniqueId()).size();
+
+				String message1 = "";
+				if (message == null || message.length() == 0) {
+					if (nbWarnings > 1)
+						message1 = defaultMessage3;
+					else if (nbWarnings > 0)
+						message1 = defaultMessage2;
+					else
+						message1 = defaultMessage1;
+				} else
+					message1 = message;
+
+				final String finalMessage = message1;
 
 				Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
 					@Override
@@ -105,7 +115,6 @@ public class Warnings {
 		} else if (nbWarnings == 2) {
 			//Stop then kick on delay, final warning
 			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30 * 20, 7), false);
-			target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30 * 20, 128), false);
 			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 30 * 20, 7), false);
 
 			title = ChatColor.RED + "" + ChatColor.BOLD + "FINAL WARNING";
@@ -115,7 +124,6 @@ public class Warnings {
 		} else if (nbWarnings == 1) {
 			//Stop then kick on delay
 			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30 * 20, 7), false);
-			target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30 * 20, 128), false);
 			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 30 * 20, 7), false);
 
 			title = ChatColor.RED + "" + ChatColor.BOLD + "SECOND WARNING";
@@ -129,7 +137,7 @@ public class Warnings {
 		}
 
 		//Send the warning to the player
-		target.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + message);
+		target.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "STAFF NOTE: " + ChatColor.RESET + ChatColor.WHITE + message);
 		target.sendTitle(title, subtitle, 10, 200, 10);
 
 		//Notify the sender
@@ -149,7 +157,7 @@ public class Warnings {
 		}
 
 		final String logMessage;
-		if (message.equals(defaultMessage))
+		if (message.equals(defaultMessage1) || message.equals(defaultMessage2) || message.equals(defaultMessage3))
 			logMessage = "No griefing.";
 		else
 			logMessage = message;
