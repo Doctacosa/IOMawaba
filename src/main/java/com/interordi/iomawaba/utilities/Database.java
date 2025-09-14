@@ -74,7 +74,7 @@ public class Database {
 				"  `id` int(11) NOT NULL AUTO_INCREMENT, " +
 				"  `uuid` varchar(36) NOT NULL, " +
 				"  `message` varchar(100) DEFAULT NULL, " +
-				"  `by_uuid` varchar(36) NOT NULL, " +
+				"  `by_uuid` varchar(36) NULL, " +
 				"  `by_name` varchar(30) NOT NULL, " +
 				"  `date` datetime NOT NULL DEFAULT current_timestamp(), " +
 				"  PRIMARY KEY (`id`), " +
