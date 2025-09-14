@@ -137,7 +137,7 @@ public class Warnings {
 		}
 
 		//Send the warning to the player
-		target.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "STAFF NOTE: " + ChatColor.RESET + ChatColor.WHITE + message);
+		target.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "MESSAGE FROM STAFF: " + ChatColor.RESET + ChatColor.WHITE + message);
 		target.sendTitle(title, subtitle, 10, 200, 10);
 
 		//Notify the sender
