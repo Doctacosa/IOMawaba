@@ -1,5 +1,7 @@
 package com.interordi.iomawaba;
 
+import java.time.ZoneId;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -56,6 +58,8 @@ public class IOMawabaSpigot extends JavaPlugin {
 
 		warnings = new Warnings(this, db);
 		bans = new Bans(db);
+
+		getLogger().info("System timezone: " + ZoneId.systemDefault());
 
 		getLogger().info("IOMawaba enabled");
 	}

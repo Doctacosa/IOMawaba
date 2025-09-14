@@ -1,6 +1,6 @@
 package com.interordi.iomawaba.commands;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
@@ -44,7 +44,7 @@ public class GTempBanIp extends Command {
 		}
 
 		String targetIp = args[0];
-		LocalDateTime endTime = Bans.parseDuration(args[1]);
+		ZonedDateTime endTime = Bans.parseDuration(args[1]);
 
 		if (endTime == null) {
 			sender.sendMessage(new ComponentBuilder("Invalid duration specified: " + args[1]).color(ChatColor.RED).create());

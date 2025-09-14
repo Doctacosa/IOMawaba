@@ -1,6 +1,6 @@
 package com.interordi.iomawaba.modules;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.IOMawabaSpigot;
@@ -166,7 +166,7 @@ public class Warnings {
 		if (ban > 0) {
 			String playerMessage;
 			String serverMessage;
-			LocalDateTime endTime = null;
+			ZonedDateTime endTime = null;
 
 			if (ban == 999) {
 				playerMessage = "You have been permanently banned: " + logMessage;
@@ -174,12 +174,12 @@ public class Warnings {
 			} else {
 				playerMessage = "You have been banned for " + ban + " days: " + logMessage;
 				serverMessage = target.getDisplayName() + " was banned (" + ban + " days): " + logMessage;
-				endTime = LocalDateTime.now().plusDays(ban);
+				endTime = ZonedDateTime.now().plusDays(ban);
 			}
 			target.kickPlayer(playerMessage);
 			Bukkit.getServer().getLogger().info("|IOBAN|" + serverMessage);
 			
-			final LocalDateTime finalEndTime = endTime;
+			final ZonedDateTime finalEndTime = endTime;
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {

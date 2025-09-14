@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,13 +129,13 @@ public class Database {
 	
 	
 	//Get the active warnings on a player
-	public Map< LocalDateTime, String > getWarnings(UUID player) {
+	public Map< ZonedDateTime, String > getWarnings(UUID player) {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String query = "";
-		Map< LocalDateTime, String > warnings = new HashMap< LocalDateTime, String >();
+		Map< ZonedDateTime, String > warnings = new HashMap< ZonedDateTime, String >();
 
 		LocalDate date = LocalDate.now();
 		date = date.minusDays(180);
@@ -154,10 +156,10 @@ public class Database {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				LocalDateTime i = LocalDateTime.parse(
+				ZonedDateTime i = LocalDateTime.parse(
 					rs.getString("date").substring(0, 19),
 					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-				);
+				).atZone(ZoneId.systemDefault());
 				warnings.put(i, rs.getString("message"));
 			}
 			rs.close();
@@ -181,7 +183,7 @@ public class Database {
 		ResultSet rs = null;
 		String query = "";
 
-		LocalDateTime datetime = LocalDateTime.now();
+		ZonedDateTime datetime = ZonedDateTime.now();
 		
 		try {
 			conn = DriverManager.getConnection(database);
@@ -199,7 +201,7 @@ public class Database {
 			
 			while (rs.next()) {
 				UUID uuid = null;
-				LocalDateTime endDate = null;
+				ZonedDateTime endDate = null;
 
 				if (rs.getString("uuid") != null && !rs.getString("uuid").isEmpty()) {
 					uuid = UUID.fromString(rs.getString("uuid"));
@@ -209,7 +211,7 @@ public class Database {
 					endDate = LocalDateTime.parse(
 						rs.getString("end").substring(0, 19),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-					);
+					).atZone(ZoneId.systemDefault());
 				}
 
 				BanData ban = new BanData(
@@ -247,7 +249,8 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 
-			LocalDateTime date = LocalDateTime.now();
+			ZonedDateTime date = ZonedDateTime.now();
+			DateTimeFormatter timePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 			String sUuid = (uuid != null) ? uuid.toString() : null;
 			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
@@ -261,7 +264,7 @@ public class Database {
 			pstmt.setString(2, sSourceUuid);
 			pstmt.setString(3, sourceName);
 			pstmt.setString(4, message);
-			pstmt.setString(5, date.toString());
+			pstmt.setString(5, timePattern.format(date));
 			pstmt.executeUpdate();
 
 		} catch (SQLException ex) {
@@ -307,7 +310,7 @@ public class Database {
 	
 	
 	//Ban a target
-	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, LocalDateTime endTime, String message) {
+	public BanData banTarget(UUID targetUuid, String targetName, String ip, UUID sourceUuid, String sourceName, String server, ZonedDateTime endTime, String message) {
 		Connection conn = null;
 		String query = "";
 
@@ -321,12 +324,13 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 
-			LocalDateTime startTime = LocalDateTime.now();
+			ZonedDateTime startTime = ZonedDateTime.now();
+			DateTimeFormatter timePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 			String sTargetUuid = (targetUuid != null) ? targetUuid.toString() : null;
 			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
-			String sStartTime = (startTime != null) ? startTime.toString() : null;
-			String sEndTime = (endTime != null) ? endTime.toString() : null;
+			String sStartTime = (startTime != null) ? startTime.format(timePattern) : null;
+			String sEndTime = (endTime != null) ? endTime.format(timePattern) : null;
 			
 			//Record today's visit
 			query = "" +
@@ -375,7 +379,8 @@ public class Database {
 		try {
 			conn = DriverManager.getConnection(database);
 
-			LocalDateTime clearTime = LocalDateTime.now();
+			ZonedDateTime clearTime = ZonedDateTime.now();
+			DateTimeFormatter timePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 			String sSourceUuid = (sourceUuid != null) ? sourceUuid.toString() : null;
 			String sTargetUuid = (targetUuid != null) ? targetUuid.toString() : null;
@@ -387,7 +392,7 @@ public class Database {
 					"WHERE ip = ? " + 
 					"  AND (unban_date > NOW() OR unban_date IS NULL) ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, clearTime.toString());
+				pstmt.setString(1, timePattern.format(clearTime));
 				pstmt.setString(2, sSourceUuid);
 				pstmt.setString(3, sourceName);
 				pstmt.setString(4, message);
@@ -405,7 +410,7 @@ public class Database {
 					"WHERE uuid = ? " + 
 					"  AND (unban_date > NOW() OR unban_date IS NULL) ";
 				PreparedStatement pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, clearTime.toString());
+				pstmt.setString(1, timePattern.format(clearTime));
 				pstmt.setString(2, sSourceUuid);
 				pstmt.setString(3, sourceName);
 				pstmt.setString(4, message);
@@ -508,7 +513,8 @@ public class Database {
 	//		Consider carefully before using
 	public BanData getBan(UUID uuid, String ip, boolean useCache) {
 
-		LocalDateTime now = LocalDateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
+		DateTimeFormatter timePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 		if (useCache) {
 			for (BanData ban : bans) {
@@ -537,7 +543,7 @@ public class Database {
 					;
 					pstmt = conn.prepareStatement(query);
 				
-					pstmt.setString(1, now.toString());
+					pstmt.setString(1, timePattern.format(now));
 					pstmt.setString(2, uuid.toString());
 					pstmt.setString(3, ip);
 				} else {
@@ -557,13 +563,13 @@ public class Database {
 				rs = pstmt.executeQuery();
 				
 				while (rs.next()) {
-					LocalDateTime endDate = null;
+					ZonedDateTime endDate = null;
 	
 					if (rs.getString("end") != null) {
 						endDate = LocalDateTime.parse(
 							rs.getString("end").substring(0, 19),
 							DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-						);
+						).atZone(ZoneId.systemDefault());
 					}
 	
 					ban = new BanData(

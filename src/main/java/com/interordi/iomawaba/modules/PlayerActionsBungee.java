@@ -1,6 +1,6 @@
 package com.interordi.iomawaba.modules;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
@@ -48,7 +48,7 @@ public class PlayerActionsBungee implements PlayerActions {
 
 
 	@Override
-	public ControlCode tempBanPlayer(String player, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanPlayer(String player, UUID sourceUuid, String sourceName, ZonedDateTime endTime, String message) {
 		//target can be null if the player is offline
 		UUID targetUuid = null;
 		ProxiedPlayer target = ProxyServer.getInstance().getPlayer(player);
@@ -88,7 +88,7 @@ public class PlayerActionsBungee implements PlayerActions {
 
 
 	@Override
-	public ControlCode tempBanIp(String ip, UUID sourceUuid, String sourceName, LocalDateTime endTime, String message) {
+	public ControlCode tempBanIp(String ip, UUID sourceUuid, String sourceName, ZonedDateTime endTime, String message) {
 
 		BanData ban = db.getBan(null, ip, false);
 		if (ban != null) {

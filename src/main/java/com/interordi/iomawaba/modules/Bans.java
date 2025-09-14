@@ -1,6 +1,6 @@
 package com.interordi.iomawaba.modules;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -41,7 +41,7 @@ public class Bans {
 			message += "No reason was specified";
 		
 		if (ban.end != null)
-			message += "\n\nYour ban will end on " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "";
+			message += "\n\nYour ban will end on " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")) + "";
 
 		return message;
 	}
@@ -57,7 +57,7 @@ public class Bans {
 
 		String message = "";
 		if (ban.end != null)
-			message += target + " has been banned until " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ": " + ban.reason;
+			message += target + " has been banned until " + ban.end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")) + ": " + ban.reason;
 		else
 			message += target + " has been permanently banned: " + ban.reason;
 
@@ -69,8 +69,8 @@ public class Bans {
 	
 
 	//Parse a ban duration in the format "2d5h"
-	public static LocalDateTime parseDuration(String arg) {
-		LocalDateTime end = LocalDateTime.now();
+	public static ZonedDateTime parseDuration(String arg) {
+		ZonedDateTime end = ZonedDateTime.now();
 
 		//Suffixes: y for years, mo for months, w for week, d for day, h for hour, m for minute and s for second
 

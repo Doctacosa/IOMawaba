@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.time.ZoneId;
 
 import com.interordi.iomawaba.commands.GBan;
 import com.interordi.iomawaba.commands.GBanIp;
@@ -100,6 +101,8 @@ public class IOMawabaBungee extends Plugin {
 
 		//warnings = new Warnings(this, db);
 		bans = new Bans(db);
+
+		getLogger().info("System timezone: " + ZoneId.systemDefault());
 
 		getLogger().info("IOMawaba enabled");
 	}
