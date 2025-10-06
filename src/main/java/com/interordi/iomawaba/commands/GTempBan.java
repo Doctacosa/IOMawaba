@@ -2,6 +2,8 @@ package com.interordi.iomawaba.commands;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.modules.Bans;
@@ -25,12 +27,19 @@ public class GTempBan extends Command {
 	
 
 	@Override
-	public void execute(CommandSender sender, String[] args) {
+	public void execute(CommandSender sender, String[] rawArgs) {
 
 		if (!sender.hasPermission("iomawaba.admin")) {
 			sender.sendMessage(new ComponentBuilder("You don't have permission to use this command.").color(ChatColor.RED).create());
 			return;
 		}
+
+		//Remove empty arguments
+		String[] args =
+			Stream.of(rawArgs)
+				.filter(item -> item != null && !"".equals(item))
+				.collect(Collectors.toList())
+				.toArray(new String[0]);
 
 		if (args.length < 2) {
 			sender.sendMessage(new ComponentBuilder("You must specify a target name then a duration.").color(ChatColor.RED).create());

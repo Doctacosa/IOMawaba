@@ -1,6 +1,8 @@
 package com.interordi.iomawaba.commands;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.utilities.ControlCode;
@@ -23,12 +25,19 @@ public class GKick extends Command {
 	
 
 	@Override
-	public void execute(CommandSender sender, String[] args) {
+	public void execute(CommandSender sender, String[] rawArgs) {
 
 		if (!sender.hasPermission("iomawaba.admin")) {
 			sender.sendMessage(new ComponentBuilder("You don't have permission to use this command.").color(ChatColor.RED).create());
 			return;
 		}
+
+		//Remove empty arguments
+		String[] args =
+			Stream.of(rawArgs)
+				.filter(item -> item != null && !"".equals(item))
+				.collect(Collectors.toList())
+				.toArray(new String[0]);
 
 		if (args.length == 0) {
 			sender.sendMessage(new ComponentBuilder("You must specify a target name.").color(ChatColor.RED).create());
