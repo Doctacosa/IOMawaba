@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.ZoneId;
 
+import org.bstats.bungeecord.Metrics;
+
 import com.interordi.iomawaba.commands.GBan;
 import com.interordi.iomawaba.commands.GBanIp;
 import com.interordi.iomawaba.commands.GKick;
@@ -103,6 +105,10 @@ public class IOMawabaBungee extends Plugin {
 		bans = new Bans(db);
 
 		getLogger().info("System timezone: " + ZoneId.systemDefault());
+
+		//Enable metrics
+		@SuppressWarnings("unused")
+		Metrics metrics = new Metrics(this, 27493);
 
 		getLogger().info("IOMawaba enabled");
 	}
