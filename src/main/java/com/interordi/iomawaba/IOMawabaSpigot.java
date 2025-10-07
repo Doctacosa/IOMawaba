@@ -64,7 +64,7 @@ public class IOMawabaSpigot extends JavaPlugin {
 
 		//Enable metrics
 		@SuppressWarnings("unused")
-		Metrics metrics = new Metrics(this, 27494);
+		Metrics metrics = new Metrics(this, 27493);
 
 		getLogger().info("IOMawaba enabled");
 	}

@@ -108,7 +108,7 @@ public class IOMawabaBungee extends Plugin {
 
 		//Enable metrics
 		@SuppressWarnings("unused")
-		Metrics metrics = new Metrics(this, 27493);
+		Metrics metrics = new Metrics(this, 27494);
 
 		getLogger().info("IOMawaba enabled");
 	}
