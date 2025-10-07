@@ -1,20 +1,25 @@
 package com.interordi.iomawaba.commands;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.collect.ImmutableSet;
 import com.interordi.iomawaba.interfaces.PlayerActions;
 import com.interordi.iomawaba.utilities.ControlCode;
 import com.interordi.iomawaba.utilities.StringUtils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
-public class GKick extends Command {
+public class GKick extends Command implements TabExecutor {
 
 	PlayerActions actions;
 
@@ -71,14 +76,24 @@ public class GKick extends Command {
 		}
 		
 	}
-	
 
-		/*
-		if ((sender instanceof ProxiedPlayer)) {
-			ProxiedPlayer pSender = (ProxiedPlayer)sender;
+
+	@Override
+	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+		if (args.length == 0)
+			return ImmutableSet.of();
+
+		Set< String > matches = new HashSet< String >();
+		if (args.length == 1) {
+			String search = args[0].toLowerCase();
+			
+			for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+				if (player.getName().toLowerCase().startsWith(search)) {
+					matches.add(player.getName());
+				}
+			}
 		}
 
-		//Sends to lobby
-		p.connect(ProxyServer.getInstance().getServerInfo("lobby"));
-		*/
+		return matches;
+	}
 }
